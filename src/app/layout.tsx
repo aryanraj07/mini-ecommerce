@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat, Lato } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import ReduxProvider from "./ReduxProvider";
+import { lato, montserrat } from "@/lib/fonts";
+import Header from "./layout/Header";
+import StorageSync from "./components/Cart/Storage";
 
 export const metadata: Metadata = {
   title: "Mini Ecommerce App",
@@ -24,10 +18,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${montserrat.className} ${lato.variable}`}>
+        <ReduxProvider>
+          <Header />
+          <StorageSync />
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );

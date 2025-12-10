@@ -1,8 +1,14 @@
 @import "tailwindcss";
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --xsFontSize: 13px;
+  --normalFontSize: 14px;
+  --smFontSize: 15px;
+  --mdFontSize: 16px;
+  --lgFontSize: 17px;
+  --xlFontSize: 19px;
+  --xxlFontSize: 21px;
 }
 
 @theme inline {
@@ -18,9 +24,24 @@
     --foreground: #ededed;
   }
 }
-
+.primary-btn {
+  @apply bg-black text-white rounded-lg px-3 py-2 uppercase;
+}
+.secondary-btn {
+  @apply bg-white text-black rounded-lg px-3 py-2 uppercase border border-gray-300;
+}
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+.container-custom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.section-padding {
+  padding-top: 2rem;
+  /* padding-bottom: 2rem; */
 }
