@@ -1,11 +1,9 @@
 "use client";
-import { selectCart, selectCartSummary } from "@/features/products/selectors";
-import React from "react";
-import { useSelector } from "react-redux";
+import { createCartSummary } from "@/features/products/selectors";
+import { useAppSelector } from "@/hooks/hooks";
 
 const Summary = () => {
-  const cart = useSelector(selectCart);
-  const { subtotal, tax, shipping, total } = useSelector(selectCartSummary);
+  const { subTotal, tax, shipping, total } = useAppSelector(createCartSummary);
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md sticky top-24 space-y-6">
@@ -15,7 +13,7 @@ const Summary = () => {
       <div className="space-y-2 text-gray-700">
         <div className="flex justify-between text-sm">
           <span>Subtotal </span>
-          <span>${subtotal.toFixed(2)}</span>
+          <span>${subTotal.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span>Shipping </span>

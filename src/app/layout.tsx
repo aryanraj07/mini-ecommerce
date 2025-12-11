@@ -4,7 +4,7 @@ import "./globals.css";
 import ReduxProvider from "./ReduxProvider";
 import { lato, montserrat } from "@/lib/fonts";
 import Header from "./layout/Header";
-import StorageSync from "./components/Cart/Storage";
+import StorageSync from "./components/cart/Storage";
 
 export const metadata: Metadata = {
   title: "Mini Ecommerce App",

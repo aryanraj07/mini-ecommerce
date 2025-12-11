@@ -1,25 +1,29 @@
 "use client";
+import {} from "@/features/products/productsSlice";
+import Image from "next/image";
+import { FaStar } from "react-icons/fa";
+import Summary from "./Summary";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { CartProduct } from "@/types/cartItem";
+import { selectCartWithDetails } from "@/features/products/selectors";
 import {
   addToCart,
   decreaseQuantity,
   removeFromCart,
-} from "@/features/products/productsSlice";
-import Image from "next/image";
-import React from "react";
-import { FaStar } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import Summary from "./Summary";
+} from "@/features/cart/cartSlice";
 
 const Cart = () => {
-  const cart = useSelector((s) => s.products.cart);
-  const dispatch = useDispatch();
+  const cart = useAppSelector(selectCartWithDetails);
   console.log(cart);
-  const truncateText = (text, limit = 40) => {
+
+  const dispatch = useAppDispatch();
+  const truncateText = (text: string, limit = 40) => {
     if (!text) {
       return "";
     }
     return text.length > limit ? text.slice(0, limit) + "..." : text;
   };
+
   return (
     <div className="container-custom py-10">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -33,7 +37,7 @@ const Cart = () => {
             </p>
           ) : (
             <ul className="cart-items-wrapper space-y-4">
-              {cart.map((item) => (
+              {cart.map((item: CartProduct) => (
                 <li
                   key={item.id}
                   className="flex flex-col sm:flex-row border rounded-lg p-4 gap-4 hover:shadow-md transition-shadow"

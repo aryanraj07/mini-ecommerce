@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
-import React from "react";
-import RatingStars from "../Product/RatingStars";
-import { addToCart, toggleWishlist } from "@/features/products/productsSlice";
+import RatingStars from "../product/RatingStars";
+import { toggleWishlist } from "@/features/wishlist/wishlistSlice";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { Product } from "@/types/products";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { addToCart } from "@/features/cart/cartSlice";
 interface ProductType {
   product: Product;
 }
@@ -15,7 +15,7 @@ const ProductDetails = ({ product }: ProductType) => {
   const dispatch = useAppDispatch();
   const { image, title, category, price, rating, description, id } = product;
   const router = useRouter();
-  const { wishlist } = useAppSelector((s) => s.products);
+  const wishlist = useAppSelector((s) => s.wishlist.wishlist);
   const isWishlisted = wishlist.includes(id);
   const showCustomToast = (
     message: string,

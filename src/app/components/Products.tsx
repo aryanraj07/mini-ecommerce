@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Dropdown from "./Dropdown";
-import ProductCard from "./Product/ProductCard";
+import ProductCard from "./product/ProductCard";
 import "@/styles/components/Product/Product.css";
 
 import {
