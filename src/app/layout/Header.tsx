@@ -8,6 +8,10 @@ import { FaSearch } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import "@/styles/layout/Header.css";
+import { useAppSelector } from "@/hooks/hooks";
+
+import { CiHeart } from "react-icons/ci";
+import { selectCartTotalCount } from "@/features/cart/selectors";
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -19,7 +23,7 @@ const Header = () => {
       }, 500),
     [dispatch]
   );
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearchQuery(val);
     dispatchSearch(val);
@@ -28,6 +32,7 @@ const Header = () => {
   useEffect(() => {
     setShowSearch(pathname === "/products");
   }, [pathname]);
+  const cartCount = useAppSelector(selectCartTotalCount);
   return (
     <nav className="container-custom header-section">
       <div className="flex justify-between items-center gap-4">
@@ -37,7 +42,7 @@ const Header = () => {
         >
           Ecommerce
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-5">
           {showSearch && (
             <div className="product-search-input hidden sm:flex gap-2  items-center  bg-white focus-within:ring-2 focus-within:ring-gray-300  border border-gray-300 rounded-lg px-3 py-2 ">
               <FaSearch className="text-gray-500" />
@@ -51,8 +56,18 @@ const Header = () => {
               />
             </div>
           )}
+          <Link href="/wishlist">
+            <CiHeart size={28} className="text-gray-700" />
+          </Link>
           <Link href={"/cart"} className="relative">
-            <FiShoppingCart size={22} className="text-gray-700" />
+            <div>
+              <FiShoppingCart size={22} className="text-gray-700" />
+              {cartCount > 0 && (
+                <span className="text-xs font-semibold absolute -right-4 -top-3 bg  text-white bg-red-500 rounded-[50%] h-5 w-5 flex items-center justify-center ">
+                  {cartCount}
+                </span>
+              )}
+            </div>
           </Link>
         </div>
       </div>

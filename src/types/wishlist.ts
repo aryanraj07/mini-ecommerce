@@ -1,9 +1,6 @@
-export interface WishList {
-  id: number;
-}
-export interface WishlistItem {
+export interface WishlistType {
   id: number;
   title: string;
-  price: number;
   image: string;
+  price: number;
 }

@@ -1,4 +1,4 @@
-import ProductDetails from "@/app/components/ProductDetails/ProductDetails";
+import ProductDetails from "@/app/components/productDetails/ProductDetails";
 import products from "@/app/data/products.json";
 const ProductDetailsPage = async ({ params }: { params: { id: string } }) => {
   const resolvedParams = await params;

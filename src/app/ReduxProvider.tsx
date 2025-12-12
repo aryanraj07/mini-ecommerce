@@ -15,8 +15,8 @@ const ReduxProvider: React.FC<childrenType> = ({ children }) => {
 
   return (
     <Provider store={store}>
-      {children}
       <ReduxHydrator />
+      {children}
       <Toaster
         position={isMobile ? "bottom-center" : "top-center"}
         toastOptions={{

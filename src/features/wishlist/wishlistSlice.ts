@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface WishListState {
   wishlist: number[];
 }
@@ -30,7 +30,15 @@ const wishListSlice = createSlice({
         state.wishlist.push(productId);
       }
     },
+    removeFromWishList: (state, action: PayloadAction<number>) => {
+      // get the product id from the payload
+      //check if the product exist
+      //simply filter out
+      const productId = action.payload;
+      state.wishlist = state.wishlist.filter((item) => item !== productId);
+    },
   },
 });
-export const { toggleWishlist } = wishListSlice.actions;
+
+export const { toggleWishlist, removeFromWishList } = wishListSlice.actions;
 export default wishListSlice.reducer;

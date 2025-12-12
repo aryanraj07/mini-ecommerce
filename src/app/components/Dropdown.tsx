@@ -1,28 +1,32 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import "@/styles/components/Product/Dropdown.css";
-import { OptionsType } from "./Products";
-interface DropdownProps {
-  options: OptionsType[];
-  placeholder: string;
+
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+export interface DropdownOption {
+  label: string;
   value: string;
-  onChange: (option: OptionsType) => void;
 }
-const Dropdown = ({
+
+interface DropdownProps<T extends DropdownOption> {
+  options: T[];
+  placeholder: string;
+  value: T["value"];
+  onChange: (option: T) => void;
+}
+const Dropdown = <T extends DropdownOption>({
   options = [],
   placeholder = "Select option",
   value,
   onChange,
-}: DropdownProps) => {
+}: DropdownProps<T>) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const handleSelect = (option: OptionsType) => {
+  const handleSelect = (option: T) => {
     onChange(option);
     setOpen(false);
   };
   const seleectedLabel = options.find((p) => p.value === value)?.label;
-  //   Handling outside click
-  // TODO: LOOK UPON THIS logic
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -45,6 +49,9 @@ const Dropdown = ({
         className="w-full border border-gray-300 px-3 py-2 rounded-lg text-sm  bg-white flex items-center justify-between "
       >
         <span>{seleectedLabel || placeholder}</span>
+        <span>
+          <MdOutlineKeyboardArrowDown />
+        </span>
         {/* Todo: Icon */}
       </button>
       {/* Dropdown Menu */}

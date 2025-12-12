@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
 import RatingStars from "../product/RatingStars";
-import { toggleWishlist } from "@/features/wishlist/wishlistSlice";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { useAppDispatch } from "@/hooks/hooks";
 import { Product } from "@/types/products";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { addToCart } from "@/features/cart/cartSlice";
+import WishlistButton from "../common/WishlistButton";
+import AddToCartButton from "../common/AddToCartButton";
 interface ProductType {
   product: Product;
 }
@@ -15,8 +15,6 @@ const ProductDetails = ({ product }: ProductType) => {
   const dispatch = useAppDispatch();
   const { image, title, category, price, rating, description, id } = product;
   const router = useRouter();
-  const wishlist = useAppSelector((s) => s.wishlist.wishlist);
-  const isWishlisted = wishlist.includes(id);
   const showCustomToast = (
     message: string,
     img: string,
@@ -47,14 +45,6 @@ const ProductDetails = ({ product }: ProductType) => {
     ));
   };
 
-  const handleWishlist = () => {
-    dispatch(toggleWishlist(id));
-    showCustomToast(
-      isWishlisted ? "Removed from wishlist" : "Added to wishlist",
-      image,
-      () => router.push("/wishlist")
-    );
-  };
   const handleAddToCart = () => {
     dispatch(addToCart(id));
     showCustomToast("Item added to cart", image, () => router.push("/cart"));
@@ -88,25 +78,12 @@ const ProductDetails = ({ product }: ProductType) => {
           >
             Add to Cart
           </button>
+          <AddToCartButton id={id} image={image} />
           <button className=" px-6 py-3 bg-black text-white rounded-md  hover:bg-gray-700 transition">
             Buy Now
           </button>
         </div>
-        <button
-          className={`self-start min-w-50 wishlist-container flex items-center gap-2 cursor-pointer px-4 py-2  rounded-lg border transition-all   ${
-            isWishlisted
-              ? "bg-gray-900 text-white"
-              : "bg-white text-gray-700 hover:bg-gray-200"
-          }`}
-          onClick={handleWishlist}
-        >
-          {isWishlisted ? (
-            <FaHeart className="text-red-500 " />
-          ) : (
-            <FaRegHeart className="text-gray-600" />
-          )}
-          {isWishlisted ? "Wishlisted" : "Add to Wishlist"}
-        </button>
+        <WishlistButton id={id} image={image} />
       </div>
     </div>
   );

@@ -1,36 +1,37 @@
+import { createSelector } from "@reduxjs/toolkit";
+import { setSearchTerms } from "./productsSlice";
 import { RootState } from "@/app/store";
 import { Product } from "@/types/products";
-import { createSelector } from "@reduxjs/toolkit";
-import { CartItem } from "../cart/cartSlice";
-import { CartProduct } from "@/types/cartItem";
-const cartSelector = (state: RootState) => state.cart.cart;
-const productSelector = (state: RootState) => state.products.allproducts;
 
-export const selectCartWithDetails = createSelector(
-  [cartSelector, productSelector],
-  (cart, allproducts) =>
-    cart
-      .map((cartItem) => {
-        const product = allproducts.find((item) => item.id === cartItem.id);
-        return product ? { ...product, quantity: cartItem.quantity } : null;
-      })
-      .filter((item): item is CartProduct => item !== null)
+export const sortMethods = {
+  low: (a: Product, b: Product) => a.price - b.price,
+  high: (a: Product, b: Product) => b.price - a.price,
+  highestRated: (a: Product, b: Product) =>
+    b.rating.rate - a.rating.rate || b.rating.count - a.rating.count,
+  "z-a": (a: Product, b: Product) => b.title.localeCompare(a.title),
+};
+export const selectSearchFiltered = createSelector(
+  [
+    (state: RootState) => state.products.allproducts,
+    (state: RootState) => state.products.searchTerm,
+  ],
+  (allproducts, term) =>
+    term
+      ? allproducts.filter((item) =>
+          item.title.toLowerCase().includes(term.toLowerCase())
+        )
+      : allproducts
 );
-export const createCartSummary = createSelector(
-  [selectCartWithDetails],
-  (cart: CartProduct[]) => {
-    const subTotal = cart.reduce(
-      (sum: number, item) => sum + item?.price * item.quantity,
-      0
-    );
-    const tax = subTotal * 0.1;
-    const shipping = subTotal > 0 ? 0 : 0;
-    const total = subTotal + tax + shipping;
-    return { subTotal, tax, shipping, total };
-    //get the cartItems with data
-  }
+export const selectCategoryFiltered = createSelector(
+  [selectSearchFiltered, (state: RootState) => state.products.category],
+  (products, category) =>
+    // if category==="all "return product else apply category=== prodyct.category
+    category === "all"
+      ? products
+      : products.filter((item) => item.category === category)
 );
-export const selectCartTotalCount = createSelector(
-  [cartSelector],
-  (cart): number => cart.length
+export const selectSortedProducts = createSelector(
+  [selectCategoryFiltered, (state: RootState) => state.products.sort],
+  (products, sort) =>
+    sort === "none" ? products : [...products].sort(sortMethods[sort])
 );

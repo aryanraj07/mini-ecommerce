@@ -1,5 +1,6 @@
 "use client";
-import { createCartSummary } from "@/features/products/selectors";
+
+import { createCartSummary } from "@/features/cart/selectors";
 import { useAppSelector } from "@/hooks/hooks";
 
 const Summary = () => {

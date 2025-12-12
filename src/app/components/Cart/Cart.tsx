@@ -5,12 +5,13 @@ import { FaStar } from "react-icons/fa";
 import Summary from "./Summary";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { CartProduct } from "@/types/cartItem";
-import { selectCartWithDetails } from "@/features/products/selectors";
+
 import {
   addToCart,
   decreaseQuantity,
   removeFromCart,
 } from "@/features/cart/cartSlice";
+import { selectCartWithDetails } from "@/features/cart/selectors";
 
 const Cart = () => {
   const cart = useAppSelector(selectCartWithDetails);
