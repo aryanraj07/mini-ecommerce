@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Product } from "@/types/products";
 interface ProductState {
   allproducts: Product[];
-  filteredProducts: Product[];
   category: string;
   sort: "none" | "low" | "high" | "highestRated" | "z-a";
   searchTerm: string;
@@ -10,7 +9,6 @@ interface ProductState {
 
 const initialState: ProductState = {
   allproducts: [],
-  filteredProducts: [],
   category: "all",
   sort: "none",
   searchTerm: "",
@@ -20,10 +18,6 @@ export const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    loadProducts: (state) => {
-      const savedProducts = localStorage.getItem("products");
-      if (savedProducts) state.allproducts = JSON.parse(savedProducts);
-    },
     setProducts: (state, action: PayloadAction<Product[]>) => {
       state.allproducts = action.payload;
     },

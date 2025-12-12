@@ -5,11 +5,7 @@ import Dropdown from "./Dropdown";
 
 import "@/styles/components/Product/Product.css";
 
-import {
-  setCategory,
-  setProducts,
-  setSort,
-} from "@/features/products/productsSlice";
+import { setCategory, setSort } from "@/features/products/productsSlice";
 import { Product } from "@/types/products";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import ProductSkelton from "./skelton/ProductSkelton";
@@ -29,7 +25,7 @@ export interface CategoryOptionType {
 //   value: string;
 //   label: string;
 // }
-const Products = ({ products }: { products: Product[] }) => {
+const Products = () => {
   const [loading, setLoading] = useState(false);
 
   const { sort, category } = useAppSelector((s) => s.products);
@@ -52,9 +48,7 @@ const Products = ({ products }: { products: Product[] }) => {
 
   // dispatching the product data to the redux
   const productsToShow = useAppSelector(selectSortedProducts);
-  useEffect(() => {
-    dispatch(setProducts(products));
-  }, [dispatch, products]);
+
   useEffect(() => {
     const start = setTimeout(() => setLoading(true), 0);
     const stop = setTimeout(() => setLoading(false), 400);

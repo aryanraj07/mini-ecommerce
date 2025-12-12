@@ -30,7 +30,7 @@ const ProductDetails = ({ product }: ProductType) => {
           t.visible ? "animate-toast-in" : "animate-toast-out"
         } flex items-center gap-3 cursor-pointer
       bg-white border border-gray-200 rounded-xl shadow-md
-      px-3 py-3 w-[240px] sm:w-[300px]
+      px-3 py-3 w-60 sm:w-[300px]
       transition-all hover:shadow-lg`}
       >
         <div className="relative w-10 h-10 bg-gray-100 rounded-md shadow-sm">

@@ -1,6 +1,7 @@
+"use client";
 import { setProducts } from "@/features/products/productsSlice";
 import { useAppDispatch } from "@/hooks/hooks";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import productsJSON from "@/app/data/products.json";
 
 const ReduxHydrator = () => {
