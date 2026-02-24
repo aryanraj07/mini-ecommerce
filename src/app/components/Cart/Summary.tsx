@@ -1,40 +1,84 @@
 "use client";
 
-import { createCartSummary } from "@/features/cart/selectors";
-import { useAppSelector } from "@/hooks/hooks";
+import { SummaryType } from "@/types/types";
+import { useTRPC } from "@/utils/trpc";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
-const Summary = () => {
-  const { subTotal, tax, shipping, total } = useAppSelector(createCartSummary);
+interface SummaryProps {
+  summary: SummaryType;
+}
 
+const Summary = ({ summary }: SummaryProps) => {
+  const trpc = useTRPC();
+  const router = useRouter();
+  // const checkoutMutation = useMutation(trpc.order.checkout.mutationOptions());
+
+  // const verifyPaymentMutation = useMutation(
+  //   trpc.order.verifyPayment.mutationOptions(),
+  // );
+
+  // const handleCheckout = async () => {
+  //   const data = await checkoutMutation.mutateAsync();
+  //   if (!(window as any).Razorpay) {
+  //     alert("Razorpay SDK failed to load");
+  //     return;
+  //   }
+  //   const options = {
+  //     key: data.key,
+  //     amount: data.amount,
+  //     currency: data.currency,
+  //     order_id: data.razorpayOrderId,
+  //     name: "Your Store",
+  //     description: "Order Payment",
+
+  //     handler: async function (response: any) {
+  //       await verifyPaymentMutation.mutateAsync({
+  //         razorpay_order_id: response.razorpay_order_id,
+  //         razorpay_payment_id: response.razorpay_payment_id,
+  //         razorpay_signature: response.razorpay_signature,
+  //       });
+  //       router.push("/success");
+  //     },
+
+  //     theme: {
+  //       color: "#000000",
+  //     },
+  //   };
+
+  //   const rzp = new (window as any).Razorpay(options);
+  //   rzp.open();
+  // };
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md sticky top-24 space-y-6">
-      <h3 className="text-xl text-gray-900 border-b pb-3 font-semibold">
-        Order Sumarry
-      </h3>
-      <div className="space-y-2 text-gray-700">
-        <div className="flex justify-between text-sm">
-          <span>Subtotal </span>
-          <span>${subTotal.toFixed(2)}</span>
+    <div className="bg-white p-6 rounded-2xl shadow-md sticky top-24 space-y-6 border border-gray-100">
+      <h3 className="text-xl font-semibold border-b pb-3">Order Summary</h3>
+
+      <div className="space-y-3 text-gray-700 text-sm">
+        <div className="flex justify-between">
+          <span>Subtotal</span>
+          <span>${summary.total.toFixed(2)}</span>
         </div>
-        <div className="flex justify-between text-sm">
-          <span>Shipping </span>
-          <span>${shipping.toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between text-smr">
-          <span>Tax </span>
-          <span>${tax.toFixed(2)}</span>
+
+        <div className="flex justify-between text-green-600">
+          <span>Discount</span>
+          <span>- ${summary.discount.toFixed(2)}</span>
         </div>
       </div>
 
-      <div className="border-t pt-4  flex justify-between items-center">
-        <p className="font-semibold text-lg text-gray-900">Total</p>
-        <p className="text-xl text-black font-bold">${total.toFixed(2)}</p>
+      <div className="border-t pt-4 flex justify-between items-center">
+        <p className="font-semibold text-lg">Total</p>
+        <p className="text-xl font-bold">${summary.payable.toFixed(2)}</p>
       </div>
+
       <div className="flex flex-col gap-3 pt-2">
-        <button className="px-6 py-3 bg-black text-white rounded-md  hover:bg-gray-700 transition">
+        <button
+          className="px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition"
+          // onClick={handleCheckout}
+        >
           Proceed to Checkout
         </button>
-        <button className="px-6 py-3 bg-white text-black rounded-md  hover:bg-gray-700 hover:text-white transition-all">
+
+        <button className="px-6 py-3 bg-gray-100 text-gray-800 rounded-xl hover:bg-gray-200 transition">
           Continue Shopping
         </button>
       </div>

@@ -1,12 +1,13 @@
 "use client";
-import { WishlistItem } from "@/types/wishlist";
+
+import { WishlistType } from "@/types/wishlist";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaCross } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
 interface WishlistProp {
-  data: WishlistItem;
+  data: WishlistType;
 }
 const WishListItem = ({ data }: WishlistProp) => {
   const { id, image, title, price } = data;

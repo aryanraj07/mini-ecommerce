@@ -4,8 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { Toaster } from "react-hot-toast";
 import { useMobile } from "@/hooks/useMobile";
-import { loadProducts } from "@/features/products/productsSlice";
-import ReduxHydrator from "./ReduxHydrator";
+
 interface childrenType {
   children: React.ReactNode;
 }
@@ -15,7 +14,6 @@ const ReduxProvider: React.FC<childrenType> = ({ children }) => {
 
   return (
     <Provider store={store}>
-      <ReduxHydrator />
       {children}
       <Toaster
         position={isMobile ? "bottom-center" : "top-center"}

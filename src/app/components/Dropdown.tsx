@@ -3,10 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "@/styles/components/Product/Dropdown.css";
 
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-export interface DropdownOption {
-  label: string;
-  value: string;
-}
+import { DropdownOption } from "@/constants";
 
 interface DropdownProps<T extends DropdownOption> {
   options: T[];
@@ -26,7 +23,9 @@ const Dropdown = <T extends DropdownOption>({
     onChange(option);
     setOpen(false);
   };
+
   const seleectedLabel = options.find((p) => p.value === value)?.label;
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (

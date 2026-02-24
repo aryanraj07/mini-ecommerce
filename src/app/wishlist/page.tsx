@@ -4,7 +4,8 @@ import Wishlist from "../components/wishlist/Wishlist";
 const page = () => {
   return (
     <>
-      <Wishlist />
+    
+      <Wishlist/>
     </>
   );
 };

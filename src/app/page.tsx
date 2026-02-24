@@ -1,11 +1,8 @@
-"use client";
 import Link from "next/link";
-import React from "react";
-
-const Home = () => {
+const Home = async () => {
   return (
     <div className="container-custom flex items-center justify-center min-h-screen">
-      <Link href={"/products"} className="primary-btn">
+      <Link href="/products" className="primary-btn">
         View Products
       </Link>
     </div>

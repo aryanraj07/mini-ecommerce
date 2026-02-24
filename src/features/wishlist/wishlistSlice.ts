@@ -1,44 +1,35 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axiosInstance from "@/styles/auth/axiosInstance";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { log } from "node:console";
+import toast from "react-hot-toast";
 interface WishListState {
   wishlist: number[];
 }
-let storedWishlist: number[] = [];
-if (typeof window !== "undefined") {
-  try {
-    const savedWishlist = localStorage.getItem("wishlist");
-    storedWishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
-  } catch (err) {
-    storedWishlist = [];
-  }
-}
+
 const initialState: WishListState = {
-  wishlist: storedWishlist,
+  wishlist: [],
 };
 const wishListSlice = createSlice({
   name: "wishlist",
   initialState,
   reducers: {
-    toggleWishlist: (state, action) => {
-      // get the id from the action payload
-      // if the product already exist then filter out
-      //else push the product id in the wishlist
-      const productId = action.payload;
-      const existingProduct = state.wishlist.find((item) => item === productId);
-      if (existingProduct) {
-        state.wishlist = state.wishlist.filter((item) => item !== productId);
+    setWishlist: (state, action) => {
+      state.wishlist = action.payload;
+    },
+    toggleWishlist: (state, action: PayloadAction<number>) => {
+      const id = action.payload;
+      console.log(id);
+
+      if (state.wishlist.includes(id)) {
+        state.wishlist = state.wishlist.filter((item) => item != id);
       } else {
-        state.wishlist.push(productId);
+        state.wishlist.push(id);
       }
     },
-    removeFromWishList: (state, action: PayloadAction<number>) => {
-      // get the product id from the payload
-      //check if the product exist
-      //simply filter out
-      const productId = action.payload;
-      state.wishlist = state.wishlist.filter((item) => item !== productId);
+    clearWishlist: (state) => {
+      state.wishlist = [];
     },
   },
 });
-
-export const { toggleWishlist, removeFromWishList } = wishListSlice.actions;
+export const { setWishlist, toggleWishlist } = wishListSlice.actions;
 export default wishListSlice.reducer;
