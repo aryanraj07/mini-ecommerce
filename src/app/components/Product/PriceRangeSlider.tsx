@@ -10,10 +10,8 @@ type PriceRange = {
   min: number;
   max: number;
 };
-type PropsType = {
-  onChange: (range: PriceRange) => void;
-};
-const PriceRangeSlider: React.FC<PropsType> = () => {
+
+const PriceRangeSlider: React.FC = () => {
   const dispatch = useAppDispatch();
   const { priceRange } = useAppSelector((state) => state.filter.selected);
   const [localPriceRange, setLocalPriceRnge] = useState<number[]>([

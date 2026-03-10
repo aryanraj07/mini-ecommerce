@@ -6,13 +6,11 @@ import RatingStars from "../product/RatingStars";
 import ButtonContainer from "./ButtonContainer";
 import WishlistButton from "../common/WishlistButton";
 import { ProductItem, ReviewItem, TagItem } from "@/types/types";
-import { normalizeProduct } from "@/utils/normalizeProduct";
 interface ProductDescProps {
   product: ProductItem;
 }
 
 const ProductDesc = ({ product }: ProductDescProps) => {
-  const safeProduct = normalizeProduct(product);
   const {
     id,
     title,
@@ -27,11 +25,14 @@ const ProductDesc = ({ product }: ProductDescProps) => {
     brand,
     tags = [],
     reviews = [],
-  } = safeProduct;
+  } = product;
 
   const productImages: string[] =
-    images && images.length > 0 ? images : [thumbnail];
-
+    images && images.length > 0
+      ? images.filter(Boolean)
+      : thumbnail
+        ? [thumbnail]
+        : [];
   const [selectedImage, setSelectedImage] = useState(productImages[0]);
   const [zoomStyle, setZoomStyle] = useState<CSSProperties>({});
 
@@ -53,7 +54,7 @@ const ProductDesc = ({ product }: ProductDescProps) => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-12">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
       {/* LEFT SIDE - IMAGES */}
       <div className="flex gap-4">
         {/* Thumbnails */}
@@ -108,7 +109,7 @@ const ProductDesc = ({ product }: ProductDescProps) => {
 
         {/* Rating */}
         <div className="flex items-center gap-2">
-          <RatingStars rating={rating} />
+          {rating && <RatingStars rating={rating} />}
           <span className="text-sm text-gray-600">
             ({reviews?.length || 0} Reviews)
           </span>
@@ -116,9 +117,11 @@ const ProductDesc = ({ product }: ProductDescProps) => {
 
         {/* Price Section */}
         <div className="flex items-center gap-4">
-          <span className="text-3xl font-bold text-black">
-            ${discountedPrice.toFixed(2)}
-          </span>
+          {discountedPrice && (
+            <span className="text-3xl font-bold text-black">
+              ${discountedPrice.toFixed(2)}
+            </span>
+          )}
           <span className="text-lg line-through text-gray-400">${price}</span>
           <span className="text-green-600 font-medium">
             {discountPercentage}% OFF

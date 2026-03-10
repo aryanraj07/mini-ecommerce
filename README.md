@@ -13,11 +13,32 @@ li
 ```ts
 import type { CSSProperties } from "react";
 ```
+
 <!--  -->
-## Implementing Cart fetature 
+
+## Implementing Cart fetature
+
 ### Add to cart button
->Optimistic update
+
+> Optimistic update
+
 ```ts
-onMutate()
- ```
-lets undrstand this 
+onMutate();
+```
+
+lets undrstand this
+
+### So on order slug page i will apply polling for gettting the pending payments done
+
+```ts
+const { data, isLoading } = useQuery(
+  trpc.order.getOrdderById.queryOptions(
+    { orderId: Number(orderId) },
+    {
+      enabled: !!orderId,
+      refetchInterval: (query) =>
+        query.state.data?.paymentStatus === "PENDING" ? 2000 : false,
+    },
+  ),
+);
+```

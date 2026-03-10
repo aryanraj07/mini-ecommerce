@@ -1,10 +1,13 @@
 import Link from "next/link";
+import CategoriesSection from "./components/home/CategoriesSection";
+import HeroSection from "./components/home/HeroSection";
 const Home = async () => {
   return (
-    <div className="container-custom flex items-center justify-center min-h-screen">
-      <Link href="/products" className="primary-btn">
-        View Products
-      </Link>
+    <div className=" min-h-screen ">
+      <HeroSection />
+      <div className="container-custom mt-5">
+        <CategoriesSection />
+      </div>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React from "react";
 import WishlistButton from "../common/WishlistButton";
 interface ProductActionProps {
   id: number;
-  thumbnail: string;
+  thumbnail: string | null;
 }
 const ProudctAction = ({ id, thumbnail }: ProductActionProps) => {
   return (

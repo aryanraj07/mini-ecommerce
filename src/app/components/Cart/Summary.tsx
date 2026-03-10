@@ -7,48 +7,49 @@ import { useRouter } from "next/navigation";
 
 interface SummaryProps {
   summary: SummaryType;
+  selectedItems: number[];
 }
 
-const Summary = ({ summary }: SummaryProps) => {
+const Summary = ({ summary, selectedItems }: SummaryProps) => {
   const trpc = useTRPC();
   const router = useRouter();
-  // const checkoutMutation = useMutation(trpc.order.checkout.mutationOptions());
+  const checkoutMutation = useMutation(trpc.order.checkout.mutationOptions());
 
-  // const verifyPaymentMutation = useMutation(
-  //   trpc.order.verifyPayment.mutationOptions(),
-  // );
+  const handleCheckout = async () => {
+    const data = await checkoutMutation.mutateAsync({
+      cartItemsIds: selectedItems,
+    });
+    if (!(window as any).Razorpay) {
+      alert("Razorpay SDK failed to load");
+      return;
+    }
 
-  // const handleCheckout = async () => {
-  //   const data = await checkoutMutation.mutateAsync();
-  //   if (!(window as any).Razorpay) {
-  //     alert("Razorpay SDK failed to load");
-  //     return;
-  //   }
-  //   const options = {
-  //     key: data.key,
-  //     amount: data.amount,
-  //     currency: data.currency,
-  //     order_id: data.razorpayOrderId,
-  //     name: "Your Store",
-  //     description: "Order Payment",
+    const options = {
+      key: data.key,
+      amount: data.amount,
+      currency: data.currency,
+      order_id: data.razorpayOrderId,
+      name: "Your Store",
+      description: "Order Payment",
 
-  //     handler: async function (response: any) {
-  //       await verifyPaymentMutation.mutateAsync({
-  //         razorpay_order_id: response.razorpay_order_id,
-  //         razorpay_payment_id: response.razorpay_payment_id,
-  //         razorpay_signature: response.razorpay_signature,
-  //       });
-  //       router.push("/success");
-  //     },
+      handler: function () {
+        router.push(`/orders/${data.orderId}`);
+      },
 
-  //     theme: {
-  //       color: "#000000",
-  //     },
-  //   };
+      modal: {
+        ondismiss: function () {
+          router.push(`/orders/${data.orderId}`);
+        },
+      },
 
-  //   const rzp = new (window as any).Razorpay(options);
-  //   rzp.open();
-  // };
+      theme: {
+        color: "#000000",
+      },
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+    rzp.open();
+  };
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md sticky top-24 space-y-6 border border-gray-100">
       <h3 className="text-xl font-semibold border-b pb-3">Order Summary</h3>
@@ -73,7 +74,7 @@ const Summary = ({ summary }: SummaryProps) => {
       <div className="flex flex-col gap-3 pt-2">
         <button
           className="px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition"
-          // onClick={handleCheckout}
+          onClick={handleCheckout}
         >
           Proceed to Checkout
         </button>

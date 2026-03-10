@@ -12,11 +12,15 @@ import ProductPrice from "../product/ProductPrice";
 import ProudctAction from "../product/ProudctAction";
 interface ProductCardProps {
   product: ProductPreview;
-  variant: string;
+  variant: "default" | "wishlist";
   showRemove: boolean;
 }
 
-const ProductCard = ({ product, variant, showRemove }: ProductCardProps) => {
+const ProductCard = ({
+  product,
+  variant = "default",
+  showRemove,
+}: ProductCardProps) => {
   const {
     id,
     title,
@@ -47,7 +51,7 @@ const ProductCard = ({ product, variant, showRemove }: ProductCardProps) => {
         price={price}
         variant={variant}
         discountPercentage={discountPercentage}
-        discountedPrice={discountedPrice}
+        discountedPrice={discountedPrice ?? null}
       />
       <ProudctAction id={id} thumbnail={thumbnail} />
       {/* ================= IMAGE ================= */}

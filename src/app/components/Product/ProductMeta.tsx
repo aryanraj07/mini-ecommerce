@@ -1,7 +1,7 @@
 import { Star } from "lucide-react";
 import React from "react";
 interface ProductMetaProps {
-  rating: number;
+  rating: number | null;
   brandName: string;
 }
 const ProductMeta = ({ rating, brandName }: ProductMetaProps) => {

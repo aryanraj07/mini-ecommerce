@@ -1,8 +1,8 @@
 import React from "react";
 interface ProductPriceProps {
   price: number;
-  discountedPrice: number;
-  discountPercentage: number;
+  discountedPrice: number | null;
+  discountPercentage: number | null;
   variant: string;
 }
 const ProductPrice = ({

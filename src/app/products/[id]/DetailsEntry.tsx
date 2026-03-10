@@ -1,20 +1,24 @@
 import ProductDesc from "@/app/components/productDetails/ProductDesc";
-import trpc from "@/utils/fetchServerData";
-import { useTRPC } from "@/utils/trpc";
-import { useQuery } from "@tanstack/react-query";
-
+import RelatedProducts from "@/app/components/productDetails/RelatedProducts";
+import { createPublicTRPCClient } from "@/utils/fetchServerData";
 const DetailsEntry = async ({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) => {
   const { id } = await params;
+  const trpc = createPublicTRPCClient();
   const data = await trpc.products.getSingleProduct.query({ id });
-  console.log(data);
+  const relatedProducts = await trpc.products.getSimilarProducts.query({
+    productId: Number(id),
+  });
+  console.log(relatedProducts);
+
   return (
-    <>
+    <div className="max-w-7xl mx-auto p-6 ">
       <ProductDesc product={data.product} />
-    </>
+      <RelatedProducts relatedProducts={relatedProducts.products} />
+    </div>
   );
 };
 

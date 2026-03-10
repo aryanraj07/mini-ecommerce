@@ -1,15 +1,16 @@
 "use client";
-import { addToCart } from "@/features/cart/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { CartItem } from "@/types/types";
 import { showCustomToast } from "@/utils/showToast";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { queryObjects } from "v8";
-
+type CartQueryData = {
+  cartItem: CartItem[];
+};
 const AddToCartButton = ({ id, image }: { id: number; image: string }) => {
-  const dispatch = useAppDispatch();
   const trpc = useTRPC();
+
   const queryClient = useQueryClient();
   const addToCartMutation = useMutation(
     trpc.cartItem.addToCart.mutationOptions({
@@ -26,26 +27,25 @@ const AddToCartButton = ({ id, image }: { id: number; image: string }) => {
         //optimistically update cache now
         queryClient.setQueryData(
           trpc.cartItem.getCart.queryKey(),
-          (old: any[] | undefined) => {
+          (old: CartQueryData | undefined) => {
             //old is current cached data
             if (!old) return old;
-            const existing = old.find(
-              (item) => item.productId === variables.productId,
+            const existing = old.cartItem.find(
+              (item: CartItem) => item.productId === variables.productId,
             );
-            if (existing) {
-              return old.map((item) =>
+            if (!existing) return old;
+
+            return {
+              ...old,
+              cartItem: old.cartItem.map((item: CartItem) =>
                 item.productId === variables.productId
-                  ? { ...item, quantity: item.quantity + variables.quantity }
+                  ? {
+                      ...item,
+                      quantity: item.quantity + (variables.quantity ?? 0),
+                    }
                   : item,
-              );
-            }
-            return [
-              {
-                ...old,
-                productId: variables.productId,
-                quantity: variables.quantity,
-              },
-            ];
+              ),
+            };
           },
         );
         return { previousCart };
@@ -69,6 +69,7 @@ const AddToCartButton = ({ id, image }: { id: number; image: string }) => {
   );
   const router = useRouter();
   const handleAddToCart = () => {
+    console.log("CLICKED");
     // if is authenitcated call the api
     //  else dispatch the addTocart
 
@@ -82,6 +83,9 @@ const AddToCartButton = ({ id, image }: { id: number; image: string }) => {
           showCustomToast("Item added to cart", image, () =>
             router.push("/cart"),
           );
+        },
+        onError: (err) => {
+          console.log("ERROR", err);
         },
       },
     );

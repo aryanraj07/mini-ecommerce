@@ -50,6 +50,10 @@ const filterSlice = createSlice({
       state.available = action.payload;
       state.selected.priceRange = action.payload.priceRange;
     },
+    setCategory: (state, action: PayloadAction<string[]>) => {
+      state.selected.category = action.payload;
+      state.selected.page = 1;
+    },
     setSortValue: (state, action) => {
       state.sort = action.payload;
     },
@@ -112,5 +116,6 @@ export const {
   setPage,
   setRating,
   setSearch,
+  setCategory,
 } = filterSlice.actions;
 export default filterSlice.reducer;

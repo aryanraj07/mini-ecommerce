@@ -3,9 +3,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import "@/styles/auth/Login.css";
+import "@/styles/Login.css";
 import { FaMobileAlt } from "react-icons/fa";
-import { setUser } from "@/features/user/userSlice";
 import { useAppDispatch } from "@/hooks/hooks";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -25,49 +24,42 @@ const LoginPopup = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const trpc = useTRPC();
-  const timerRef = useRef(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const queryClient = useQueryClient();
-  const startTimer = (durationInSecond: number) => {
-    // take expirty time ,
-    // set in localStorage
-    // set in state
-    // if previous timeer ref clear it
-    // set new timer ref
-    const expirtyTime = Date.now() + durationInSecond * 1000;
-    localStorage.setItem("otpExpiry", expirtyTime.toString());
-    setTimeLeft(durationInSecond);
+
+  const startTimer = (expiryTime: number) => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
+
     timerRef.current = setInterval(() => {
-      const remaining = Math.floor((expirtyTime - Date.now()) / 1000);
+      const remaining = Math.floor((expiryTime - Date.now()) / 1000);
+
       if (remaining <= 0) {
-        clearInterval(timerRef.current!);
+        if (timerRef.current) clearInterval(timerRef.current);
+
         localStorage.removeItem("otpExpiry");
         setTimeLeft(0);
       } else {
         setTimeLeft(remaining);
       }
     }, 1000);
-    // if alrady any timer exists and it is smaller than Date.now - reft ime set the start timer with that value
-    // set the timer with start time
   };
+  // if alrady any timer exists and it is smaller than Date.now - reft ime set the start timer with that value
+  // set the timer with start time
 
   useEffect(() => {
-    // check from localstorage
-    // compare time > 0 from Date.now  then call the function
     const savedExpiry = localStorage.getItem("otpExpiry");
-    if (savedExpiry) {
-      const remaining = Math.floor((Number(savedExpiry) - Date.now()) / 1000);
+    if (!savedExpiry) return;
 
-      if (remaining > 0) {
-        startTimer(remaining);
-      } else {
-        localStorage.removeItem("otpExpiry");
-      }
-    }
-    return () => clearInterval(timerRef.current!);
+    const expiry = Number(savedExpiry);
+
+    startTimer(expiry);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, []);
   const isValidPhone = useMemo(() => {
     return (
@@ -81,7 +73,6 @@ const LoginPopup = () => {
   };
 
   const sendOtpMutation = useMutation(trpc.users.sendOtp.mutationOptions());
-
   const handleSendOtp = () => {
     if (!isValidPhone || !termsAndPolicy) return;
 
@@ -90,12 +81,16 @@ const LoginPopup = () => {
       {
         onSuccess: () => {
           toast.success("OTP sent successfully");
+
+          const expiry = Date.now() + 300 * 1000;
+
+          localStorage.setItem("otpExpiry", expiry.toString());
+          setTimeLeft(300);
+
+          startTimer(expiry);
+
           setOtpMode(true);
-          startTimer(300);
           setOtpValue(Array(OTP_LENGTH).fill(""));
-        },
-        onError: (error) => {
-          toast.error(error.message);
         },
       },
     );
@@ -103,6 +98,9 @@ const LoginPopup = () => {
   const verifyOtpMutation = useMutation(trpc.users.verifyOtp.mutationOptions());
   const mergeCartMutation = useMutation(
     trpc.cartItem.mergeCart.mutationOptions(),
+  );
+  const meregeWishlist = useMutation(
+    trpc.wishlistItems.mergeWishlist.mutationOptions(),
   );
   const handleVerifyOtp = async () => {
     const otp = otpValue.join("");
@@ -116,6 +114,7 @@ const LoginPopup = () => {
         onSuccess: async () => {
           try {
             await mergeCartMutation.mutateAsync();
+            await meregeWishlist.mutateAsync();
             await queryClient.invalidateQueries({
               queryKey: trpc.users.me.queryKey(),
             });

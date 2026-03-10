@@ -8,10 +8,18 @@ import { useQuery } from "@tanstack/react-query";
 
 const Wishlist = () => {
   const trpc = useTRPC();
-  const { data, isLoading } = useQuery(
+  const { data: wishlistIds = [], isLoading } = useQuery(
     trpc.wishlistItems.getWishlist.queryOptions(),
   );
-  console.log(data);
+  const { data: productsData } = useQuery(
+    trpc.products.getAllProducts.queryOptions(
+      { ids: wishlistIds },
+      {
+        enabled: wishlistIds.length > 0,
+      },
+    ),
+  );
+  const products = productsData?.products ?? [];
   if (isLoading) {
     return (
       <div>
@@ -25,10 +33,10 @@ const Wishlist = () => {
   return (
     <div>
       <h3 className="">
-        My Wishlists <span>{data?.length} items</span>
+        My Wishlists <span>{wishlistIds?.length} items</span>
       </h3>
       <div className="grid grid-cols-1 sm:grid-cold-2  md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center]">
-        {data?.map((product) => (
+        {products?.map((product) => (
           <ProductCard
             key={product.id}
             product={product}

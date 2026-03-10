@@ -1,13 +1,15 @@
 "use client";
 import { setInitialFilters } from "@/features/filters/filterSlice";
-import { setProducts } from "@/features/products/productsSlice";
-import { useAppDispatch } from "@/hooks/hooks";
-import axiosInstance from "@/styles/auth/axiosInstance";
-import { Product } from "@/types/products";
-import React, { useEffect, useRef } from "react";
 
-const ReduxHydrator = ({ filtersData }) => {
+import { useAppDispatch } from "@/hooks/hooks";
+import { FilterDataOutput } from "@/types/types";
+import React, { useEffect, useRef } from "react";
+interface FilterDataOutputProps {
+  filtersData: FilterDataOutput;
+}
+const ReduxHydrator = ({ filtersData }: FilterDataOutputProps) => {
   const dispatch = useAppDispatch();
+
   const filterRef = useRef(false);
   useEffect(() => {
     if (filtersData || !filterRef.current) {

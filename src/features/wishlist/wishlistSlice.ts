@@ -1,4 +1,4 @@
-import axiosInstance from "@/styles/auth/axiosInstance";
+import axiosInstance from "@/auth/axiosInstance";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { log } from "node:console";
 import toast from "react-hot-toast";

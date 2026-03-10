@@ -27,6 +27,7 @@
     "react-redux": "^9.2.0",
     "react-select": "^5.10.2",
     "superjson": "^2.2.6",
+    "swiper": "^12.1.2",
     "uuid": "^13.0.0"
   },
   "devDependencies": {

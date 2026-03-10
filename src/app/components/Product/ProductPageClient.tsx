@@ -17,10 +17,12 @@ import { useTRPC } from "@/utils/trpc";
 import { useQuery } from "@tanstack/react-query";
 import PaginationButton from "../common/PaginationButton";
 import { ProductsOutput } from "@/types/types";
+import { useRouter, useSearchParams } from "next/navigation";
+import { buildProductUrl } from "@/utils/buildProductUrls";
 
 const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
   const dispatch = useAppDispatch();
-
+  const router = useRouter();
   const filters = useAppSelector((state) => state.filter.selected);
   const { priceRange, category, brand, tag, rating } = filters;
   const page = filters.page;
@@ -51,10 +53,7 @@ const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
       },
     ),
   );
-  console.log(data);
-
   const products = data?.products ?? [];
-
   const meta = data?.meta;
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -64,7 +63,10 @@ const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
       });
     }
   }, [filters, sort]);
-
+  useEffect(() => {
+    const url = buildProductUrl(filters, sort, search);
+    router.replace(url);
+  }, [filters, sort, search]);
   const { total = 0 } = meta ?? {};
   return (
     <div className="flex">

@@ -1,20 +1,44 @@
 "use client";
-
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import PriceRangeSlider from "./PriceRangeSlider";
 import {
-  setPriceRange,
   clearFilters,
   toggleCategory,
   toggleBrand,
   toggleTag,
   setRating,
+  FilterOption,
 } from "@/features/filters/filterSlice";
 import { Search } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { title } from "process";
+import { useState } from "react";
 
 const MAX_VISIBLE = 8;
+type FilterItem = {
+  value: string | null;
+  count: number;
+};
+type FilterUIState = {
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  showAll?: boolean;
+  setShowAll?: React.Dispatch<React.SetStateAction<boolean>>;
+};
+type RenderListProps = {
+  title: string;
+  list: FilterItem[];
+  visible: FilterItem[];
+  selectedValues: string[];
+  toggleAction: ActionCreatorWithPayload<string>;
+  ui: FilterUIState;
+};
+
+type FilterStateProps = {
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  showAll: boolean;
+  setShowAll: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 const Filters = () => {
   const dispatch = useAppDispatch();
@@ -36,26 +60,18 @@ const Filters = () => {
 
   const [showAllCategories, setShowAllCategories] = useState(false);
   const [showAllBrands, setShowAllBrands] = useState(false);
+  const [showAllTags, setShowAllTags] = useState(false);
 
   /* ---------------- helpers ---------------- */
 
-  const filterList = (list: any[], search: string) =>
+  const filterList = (list: FilterItem[], search: string) =>
     list.filter((i) => i.value?.toLowerCase().includes(search.toLowerCase()));
 
-  const categoriesFiltered = useMemo(
-    () => filterList(categories, categorySearch),
-    [categories, categorySearch],
-  );
+  const categoriesFiltered = filterList(categories, categorySearch);
 
-  const brandsFiltered = useMemo(
-    () => filterList(brands, brandSearch),
-    [brands, brandSearch],
-  );
+  const brandsFiltered = filterList(brands, brandSearch);
 
-  const tagsFiltered = useMemo(
-    () => filterList(tags, tagSearch),
-    [tags, tagSearch],
-  );
+  const tagsFiltered = filterList(tags, tagSearch);
 
   const categoriesVisible = showAllCategories
     ? categoriesFiltered
@@ -65,62 +81,65 @@ const Filters = () => {
     ? brandsFiltered
     : brandsFiltered.slice(0, MAX_VISIBLE);
 
+  const tagsVisible = showAllTags
+    ? tagsFiltered
+    : tagsFiltered.slice(0, MAX_VISIBLE);
   /* ---------------- reusable checkbox list ---------------- */
   if (!available) return null;
   const renderList = ({
     title,
     list,
     visible,
-    search,
-    setSearch,
     selectedValues,
     toggleAction,
-    showAll,
-    setShowAll,
-  }: any) => (
-    <div>
-      <h3 className="text-sm font-semibold mb-2">{title}</h3>
+    ui,
+  }: RenderListProps) => {
+    const { search, setSearch, showAll, setShowAll } = ui;
+    return (
+      <div>
+        <h3 className="text-sm font-semibold mb-2">{title}</h3>
 
-      <div className="flex items-center gap-2 mb-2">
-        <Search size={16} />
-        <input
-          type="text"
-          placeholder={`Search ${title}`}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border rounded px-2 py-1 text-sm w-full"
-        />
-      </div>
+        <div className="flex items-center gap-2 mb-2">
+          <Search size={16} />
+          <input
+            type="text"
+            placeholder={`Search ${title}`}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="border rounded px-2 py-1 text-sm w-full"
+          />
+        </div>
 
-      <div className="space-y-2">
-        {visible.map(({ value, count }) => (
-          <label
-            key={value}
-            className="flex items-center justify-between cursor-pointer"
+        <div className="space-y-2">
+          {visible.map(({ value, count }) => (
+            <label
+              key={value}
+              className="flex items-center justify-between cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={value ? selectedValues.includes(value) : false}
+                  onChange={() => value && dispatch(toggleAction(value))}
+                />
+                <span>{value}</span>
+              </div>
+              <span className="text-xs text-gray-500">({count})</span>
+            </label>
+          ))}
+        </div>
+
+        {setShowAll && list.length > MAX_VISIBLE && (
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className="text-xs text-pink-600 mt-2 text-center"
           >
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={selectedValues?.includes(value)}
-                onChange={() => dispatch(toggleAction(value))}
-              />
-              <span>{value}</span>
-            </div>
-            <span className="text-xs text-gray-500">({count})</span>
-          </label>
-        ))}
+            {showAll ? "Show less" : `+ ${list.length - MAX_VISIBLE} more`}
+          </button>
+        )}
       </div>
-
-      {setShowAll && list.length > MAX_VISIBLE && (
-        <button
-          onClick={() => setShowAll(!showAll)}
-          className="text-xs text-pink-600 mt-2 text-center"
-        >
-          {showAll ? "Show less" : `+ ${list.length - MAX_VISIBLE} more`}
-        </button>
-      )}
-    </div>
-  );
+    );
+  };
 
   /* ---------------- UI ---------------- */
 
@@ -147,12 +166,14 @@ const Filters = () => {
         visible: showAllCategories
           ? categoriesFiltered
           : categoriesFiltered.slice(0, MAX_VISIBLE),
-        search: categorySearch,
-        setSearch: setCategorySearch,
-        selectedValues: selected.category,
         toggleAction: toggleCategory,
-        showAll: showAllCategories,
-        setShowAll: setShowAllCategories,
+        selectedValues: selected.category,
+        ui: {
+          search: categorySearch,
+          setSearch: setCategorySearch,
+          showAll: showAllCategories,
+          setShowAll: setShowAllCategories,
+        },
       })}
 
       {/* Brands */}
@@ -162,12 +183,14 @@ const Filters = () => {
         visible: showAllBrands
           ? brandsFiltered
           : brandsFiltered.slice(0, MAX_VISIBLE),
-        search: brandSearch,
-        setSearch: setBrandSearch,
         selectedValues: selected.brand,
         toggleAction: toggleBrand,
-        showAll: showAllBrands,
-        setShowAll: setShowAllBrands,
+        ui: {
+          search: brandSearch,
+          setSearch: setBrandSearch,
+          showAll: showAllBrands,
+          setShowAll: setShowAllBrands,
+        },
       })}
 
       {/* Tags (show all, no show-more) */}
@@ -175,10 +198,14 @@ const Filters = () => {
         title: "Tags",
         list: tagsFiltered,
         visible: tagsFiltered,
-        search: tagSearch,
-        setSearch: setTagSearch,
-        selectedValues: selected.tag,
         toggleAction: toggleTag,
+        selectedValues: selected.tag,
+        ui: {
+          search: tagSearch,
+          setSearch: setTagSearch,
+          showAll: showAllTags,
+          setShowAll: setShowAllTags,
+        },
       })}
 
       {/* Rating */}

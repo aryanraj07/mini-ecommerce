@@ -3,7 +3,7 @@ import { setUser } from "@/features/user/userSlice";
 import { useAppDispatch } from "@/hooks/hooks";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import  { useEffect } from "react";
+import { useEffect } from "react";
 
 const AuthLoader = () => {
   const trpc = useTRPC();

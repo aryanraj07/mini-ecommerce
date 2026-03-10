@@ -1,4 +1,4 @@
-import axiosInstance from "@/styles/auth/axiosInstance";
+import axiosInstance from "@/auth/axiosInstance";
 import { User } from "@/types/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 interface UserState {

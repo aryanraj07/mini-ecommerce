@@ -3,10 +3,9 @@ import Wishlist from "../components/wishlist/Wishlist";
 
 const page = () => {
   return (
-    <>
-    
-      <Wishlist/>
-    </>
+    <div className="container-custom">
+      <Wishlist />
+    </div>
   );
 };
 

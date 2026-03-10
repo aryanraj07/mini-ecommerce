@@ -6,21 +6,36 @@ import { CartItem } from "@/types/types";
 
 interface Props {
   item: CartItem;
+  selectedItems: number[];
   onIncrease?: () => void;
   onDecrease?: () => void;
   onRemove?: () => void;
+  onSelectItem: (cartItemId: number) => void;
 }
 
-const CartItemCard = ({ item, onIncrease, onDecrease, onRemove }: Props) => {
+const CartItemCard = ({
+  item,
+  onIncrease,
+  onDecrease,
+  onRemove,
+  onSelectItem,
+  selectedItems,
+}: Props) => {
   return (
     <div className="flex flex-col sm:flex-row gap-5 bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
       {/* Product Image */}
-      <div className="relative w-full sm:w-32 h-40 sm:h-32 rounded-xl overflow-hidden bg-gray-50">
+      <div className="relative w-full sm:w-32 h-40 sm:h-32 rounded-xl overflow-hidden bg-gray-50 relative">
         <Image
           src={item.thumbnail}
           alt={item.title}
           fill
           className="object-cover"
+        />
+        <input
+          type="checkbox"
+          className="absolute top-3 left-4 w-5 h-5 accent-black cursor-pointer"
+          checked={selectedItems.includes(item.id)}
+          onChange={() => onSelectItem(item.id)}
         />
       </div>
 
@@ -46,31 +61,34 @@ const CartItemCard = ({ item, onIncrease, onDecrease, onRemove }: Props) => {
         {/* Bottom Row */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4">
           {/* Quantity Controls */}
-          <div className="flex items-center gap-3 border rounded-lg px-3 py-1 w-fit">
-            <button
-              onClick={onDecrease}
-              className="text-lg font-bold text-gray-600 hover:text-black"
-            >
-              -
-            </button>
-            <span className="font-medium">{item.quantity}</span>
-            <button
-              onClick={onIncrease}
-              className="text-lg font-bold text-gray-600 hover:text-black"
-            >
-              +
-            </button>
+          <div className="flex items-center gap-3">
+            <span>Qty</span>
+            <div className="flex items-center gap-3 border rounded-lg px-3 py-1 w-fit">
+              <button
+                onClick={onDecrease}
+                className="text-lg font-bold text-gray-600 hover:text-black"
+              >
+                -
+              </button>
+              <span className="font-medium">{item.quantity}</span>
+              <button
+                onClick={onIncrease}
+                className="text-lg font-bold text-gray-600 hover:text-black"
+              >
+                +
+              </button>
+            </div>
           </div>
-
           {/* Price Section */}
           <div className="text-right space-y-1">
-            {item.discountPercentage ? (
+            {item.discountPercentage && item.discountedPrice ? (
               <>
                 <p className="text-sm line-through text-gray-400">
                   ${item.price.toFixed(2)}
                 </p>
+
                 <p className="text-lg font-bold text-black">
-                  ${item?.discountedPrice.toFixed(2)}
+                  ${item.discountedPrice.toFixed(2)}
                 </p>
               </>
             ) : (
