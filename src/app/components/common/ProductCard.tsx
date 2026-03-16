@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
 import WishlistButton from "./WishlistButton";
-import { ProductItem, ProductPreview, WishlistItem } from "@/types/types";
+import { ProductPreview } from "@/types/types";
 
 import ProductImage from "@/app/components/product/ProductImage";
 import ProductMeta from "@/app/components/product/ProductMeta";
