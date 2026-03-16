@@ -1,5 +1,6 @@
 import ProductDesc from "@/app/components/productDetails/ProductDesc";
 import RelatedProducts from "@/app/components/productDetails/RelatedProducts";
+
 import { createPublicTRPCClient } from "@/utils/fetchServerData";
 const DetailsEntry = async ({
   params,

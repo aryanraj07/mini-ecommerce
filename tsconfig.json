@@ -15,7 +15,7 @@
     "incremental": true,
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"],
+      "@/*": ["./*"],
       "api-types": ["../../mini-ecommerce-backend/src/server/index"]
     },
     "plugins": [

@@ -1,8 +1,9 @@
 "use client";
+
 import ProductCard from "../common/ProductCard";
 import ProductSkeleton from "../skelton/ProductSkelton";
 // import { Profiler } from "react";
-import { ProductPreview, ProductsOutput } from "@/types/types";
+import { ProductPreview } from "@/types/types";
 interface ProductGridProps {
   products: ProductPreview[];
   isFetching: boolean;
@@ -13,7 +14,7 @@ const ProductGrid = ({ products, isFetching }: ProductGridProps) => {
   }
 
   if (!products?.length) {
-  return <p>No products matched your search</p>;
+    return <p>No products matched your search</p>;
   }
   // const onRenderCallback = (
   //   id,
