@@ -1,31 +1,28 @@
-import { cacheLife, cacheTag, updateTag } from "next/cache";
-import { Product } from "@/types/products";
-
 import { Suspense } from "react";
 import ProductSkeleton from "../components/skelton/ProductSkelton";
 import ProductPageClient from "../components/product/ProductPageClient";
-import { revalidateTag } from "next/cache";
-import { useSelector } from "react-redux";
-import { useAppSelector } from "@/hooks/hooks";
-import fetchData from "@/utils/fetchData";
 import { createPublicTRPCClient } from "@/utils/fetchServerData";
+import { cacheTag, cacheLife } from "next/cache";
+import { getProducts } from "@/helpers/getProducts";
 
-const page = async () => {
-  "use cache";
-  cacheTag("products");
-  cacheLife("hours");
-  const trpc = createPublicTRPCClient();
-  const initialData = await trpc.products.getAllProducts.query({
-    page: 1,
-    limit: 20,
-  });
+export default async function Page() {
+  // "use cache";
+
+  // cacheTag("products");
+  // cacheLife("hours");
+
+  // const trpc = createPublicTRPCClient();
+
+  // const initialData = await trpc.products.getAllProducts.query({
+  //   page: 1,
+  //   limit: 20,
+  // });
+  const initialData = await getProducts();
 
   return (
     <div className="container-custom">
-      {/* ONE Suspense boundary for client logic */}
-
       <Suspense
-      fallback={
+        fallback={
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-content-center">
             {[...Array(8)].map((_, i) => (
               <ProductSkeleton key={i} />
@@ -37,6 +34,4 @@ const page = async () => {
       </Suspense>
     </div>
   );
-};
-
-export default page;
+}
