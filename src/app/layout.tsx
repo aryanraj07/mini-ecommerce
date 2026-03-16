@@ -3,12 +3,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ReduxProvider from "./ReduxProvider";
 import Header from "./layout/Header";
-import StorageSync from "./components/cart/Storage";
 import { Suspense } from "react";
 import ReactQueryProvider from "@/provider/ReactQueryProvider";
-
 import AuthLoader from "./components/AuthLoader";
-import { createPublicTRPCClient } from "@/utils/fetchServerData";
 import FiltersHydrator from "./components/FiltersHydrator";
 
 export const metadata: Metadata = {
@@ -24,19 +21,16 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Suspense fallback={null}>
-          <ReactQueryProvider>
-            <ReduxProvider>
+        <ReactQueryProvider>
+          <ReduxProvider>
+            <Suspense fallback={null}>
               <FiltersHydrator />
-
-              <AuthLoader />
-
-              <Header />
-              <StorageSync />
-              <main className="pt-16">{children}</main>
-            </ReduxProvider>
-          </ReactQueryProvider>
-        </Suspense>
+            </Suspense>
+            <AuthLoader />
+            <Header />
+            <main className="pt-16">{children}</main>
+          </ReduxProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

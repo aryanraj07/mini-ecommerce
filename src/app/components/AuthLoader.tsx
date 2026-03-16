@@ -14,7 +14,7 @@ const AuthLoader = () => {
       retry: false,
     }),
   );
-  const meQuery = useQuery(trpc.users.me.queryOptions());
+
   const refreshMutations = useMutation(trpc.users.refresh.mutationOptions());
 
   useEffect(() => {
