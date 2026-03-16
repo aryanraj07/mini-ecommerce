@@ -15,14 +15,11 @@ import { setUser } from "@/features/user/userSlice";
 import { setSearch } from "@/features/filters/filterSlice";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { makeSelectWishlistCount } from "@/features/wishlist/selectors";
-import { useSelector } from "react-redux";
 const Header = () => {
   const router = useRouter();
   const [showSearch, setShowSearch] = useState(false);
   const [localSearch, setLocalSearch] = useState("");
   const pathname = usePathname();
-  const { user } = useAppSelector((state) => state.user);
   const isAuthenticated = useAppSelector((state) => state.user.user !== null);
   const trpc = useTRPC();
   const { data: wishlistIds = [], isLoading } = useQuery(
@@ -30,7 +27,6 @@ const Header = () => {
       staleTime: 1000 * 60 * 5,
     }),
   );
-
   const dispatch = useAppDispatch();
   useEffect(() => {
     setShowSearch(pathname === "/products");
@@ -45,7 +41,12 @@ const Header = () => {
   }, [localSearch]);
 
   const queryClient = useQueryClient();
-  const { data } = useQuery(trpc.cartItem.getCart.queryOptions());
+  const { data } = useQuery(
+    trpc.cartItem.getCart.queryOptions(undefined, {
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+    }),
+  );
   const cartCount =
     data?.cartItem.reduce((total, item) => total + item.quantity, 0) ?? 0;
   const logoutMutation = useMutation(trpc.users.logout.mutationOptions());
@@ -61,7 +62,6 @@ const Header = () => {
       },
     });
   };
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
       <div className="  container-custom header-section">
