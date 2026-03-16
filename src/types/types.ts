@@ -9,6 +9,7 @@ export type WishlistItem = RouterOutput["wishlistItems"]["getWishlist"];
 export type ReviewItem = NonNullable<
   RouterOutput["products"]["getSingleProduct"]["product"]["reviews"]
 >[number];
+export type MeOutput = RouterOutput["users"]["me"];
 export type TagItem = NonNullable<
   RouterOutput["products"]["getSingleProduct"]["product"]["tags"]
 >[number];
