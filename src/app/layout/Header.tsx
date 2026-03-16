@@ -63,7 +63,7 @@ const Header = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur border-0 border-b">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
       <div className="  container-custom header-section">
         <div className="flex justify-between items-center gap-4">
           <Link

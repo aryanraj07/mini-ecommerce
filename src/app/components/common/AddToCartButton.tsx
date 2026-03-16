@@ -8,7 +8,13 @@ import { useRouter } from "next/navigation";
 type CartQueryData = {
   cartItem: CartItem[];
 };
-const AddToCartButton = ({ id, image }: { id: number; image: string }) => {
+const AddToCartButton = ({
+  id,
+  image,
+}: {
+  id: number;
+  image: string | null;
+}) => {
   const trpc = useTRPC();
 
   const queryClient = useQueryClient();

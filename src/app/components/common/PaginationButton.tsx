@@ -1,5 +1,5 @@
 import { setPage } from "@/features/filters/filterSlice";
-import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { useAppDispatch } from "@/hooks/hooks";
 interface Props {
   currentPage: number;
   lastPage: number;
@@ -7,12 +7,10 @@ interface Props {
 
 const PaginationButton = ({ currentPage, lastPage }: Props) => {
   const dispatch = useAppDispatch();
-  const { page } = useAppSelector((state) => state.filter.selected);
+
   const generatePages = () => {
     const pages: (number | string)[] = [];
-
     const delta = 2; // pages around current
-
     const start = Math.max(1, currentPage - delta);
     const end = Math.min(lastPage, currentPage + delta);
 
@@ -21,16 +19,14 @@ const PaginationButton = ({ currentPage, lastPage }: Props) => {
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
-
     if (end < lastPage) pages.push("...", lastPage);
-
     return pages;
   };
 
   const pages = generatePages();
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
+    <div className="flex items-center justify-center gap-2 mt-8 flex-wrap py-5 ">
       {/* Prev */}
       <button
         disabled={currentPage === 1}

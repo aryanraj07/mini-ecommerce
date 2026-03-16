@@ -15,12 +15,10 @@ const categories = [
 ];
 
 const CategoriesSection = () => {
-  const dispatch = useAppDispatch();
   const filters = useAppSelector((state) => state.filter.selected);
   const router = useRouter();
 
   const handleClick = (category: string) => {
-    dispatch(setCategory([category]));
     router.push(
       buildProductUrl({
         ...filters,

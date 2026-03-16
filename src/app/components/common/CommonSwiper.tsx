@@ -38,6 +38,23 @@ const CommonSwiper = <T,>({
   breakpoints,
   className = "",
 }: Props<T>) => {
+  const defaultBreakpoints = {
+    480: {
+      slidesPerView: 1.2,
+    },
+    640: {
+      slidesPerView: 1.5,
+    },
+    768: {
+      slidesPerView: 2,
+    },
+    1024: {
+      slidesPerView: 3,
+    },
+    1280: {
+      slidesPerView: 4,
+    },
+  };
   return (
     <Swiper
       modules={[Navigation, Pagination, Autoplay, FreeMode]}
@@ -55,7 +72,7 @@ const CommonSwiper = <T,>({
       loop={loop}
       slidesPerView={slidesPerView}
       spaceBetween={spaceBetween}
-      breakpoints={breakpoints}
+      breakpoints={breakpoints || defaultBreakpoints}
       className={className}
     >
       {items.map((item, index) => (

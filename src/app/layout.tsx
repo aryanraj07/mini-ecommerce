@@ -28,10 +28,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Script
-          src="https://checkout.razorpay.com/v1/checkout.js"
-          strategy="beforeInteractive"
-        />
         <ReactQueryProvider>
           <ReduxProvider>
             <ReduxHydrator filtersData={filters} />

@@ -163,9 +163,7 @@ const Filters = () => {
       {renderList({
         title: "Categories",
         list: categoriesFiltered,
-        visible: showAllCategories
-          ? categoriesFiltered
-          : categoriesFiltered.slice(0, MAX_VISIBLE),
+        visible: categoriesVisible,
         toggleAction: toggleCategory,
         selectedValues: selected.category,
         ui: {
@@ -180,9 +178,7 @@ const Filters = () => {
       {renderList({
         title: "Brands",
         list: brandsFiltered,
-        visible: showAllBrands
-          ? brandsFiltered
-          : brandsFiltered.slice(0, MAX_VISIBLE),
+        visible: brandsVisible,
         selectedValues: selected.brand,
         toggleAction: toggleBrand,
         ui: {
@@ -197,7 +193,7 @@ const Filters = () => {
       {renderList({
         title: "Tags",
         list: tagsFiltered,
-        visible: tagsFiltered,
+        visible: tagsVisible,
         toggleAction: toggleTag,
         selectedValues: selected.tag,
         ui: {

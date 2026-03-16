@@ -9,8 +9,8 @@ const RelatedProducts = ({
   relatedProducts: ProductPreview[];
 }) => {
   return (
-    <div className="">
-      <h1 className="">Related Products</h1>
+    <div className="my-5">
+      <h1 className="text-2xl font-semibold mb-6">Related Products</h1>
       <CommonSwiper
         items={relatedProducts}
         renderItem={(p: ProductPreview) => (

@@ -6,20 +6,14 @@ interface ProductMetaProps {
 }
 const ProductMeta = ({ rating, brandName }: ProductMetaProps) => {
   return (
-    <>
-      {/* description */}
-      <div className="p-4 space-y-2">
-        {/* brand */}
-        <p className="text-xs text-gray-500 uppercase tracking-wide">
-          {brandName}
-        </p>
-        {/* rating */}
-        <div className="flex items-center gap-1 text-sm">
-          <Star size={14} fill="black" />
-          <span>{rating?.toFixed(1) ?? 0}</span>
-        </div>
+    <div className="flex items-center justify-between text-xs">
+      <span className="uppercase tracking-wide text-gray-500">{brandName}</span>
+
+      <div className="flex items-center gap-1 text-gray-700">
+        <Star size={14} fill="black" />
+        <span>{rating?.toFixed(1) ?? 0}</span>
       </div>
-    </>
+    </div>
   );
 };
 

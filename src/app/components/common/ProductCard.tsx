@@ -36,66 +36,36 @@ const ProductCard = ({
     brandName,
   } = product;
   return (
-    <Link
-      href={`/products/${id}`}
-      className="group block bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
-    >
+    <div className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
+      {/* IMAGE */}
       <ProductImage
+        id={id}
         thumbnail={thumbnail}
         title={title}
         discountPercentage={discountPercentage}
         stock={stock}
       />
-      <ProductMeta rating={rating} brandName={brandName} />
-      <ProductPrice
-        price={price}
-        variant={variant}
-        discountPercentage={discountPercentage}
-        discountedPrice={discountedPrice ?? null}
-      />
-      <ProudctAction id={id} thumbnail={thumbnail} />
-      {/* ================= IMAGE ================= */}
 
-      {/* ================= CONTENT ================= */}
-      <div className="p-4 space-y-2">
-        {/* brand */}
-        <p className="text-xs text-gray-500 uppercase tracking-wide">
-          {brand?.name}
-        </p>
+      {/* CONTENT */}
+      <Link href={`/products/${id}`}>
+        <div className="p-4 space-y-2">
+          <ProductMeta rating={rating} brandName={brandName} />
 
-        {/* title */}
-        <h3 className="font-semibold text-sm line-clamp-1 group-hover:text-black">
-          {title}
-        </h3>
+          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-black transition">
+            {title}
+          </h3>
 
-        {/* description */}
+          <ProductPrice
+            price={price}
+            discountedPrice={discountedPrice ?? null}
+            discountPercentage={discountPercentage}
+            variant="default"
+          />
 
-        {/* rating */}
-        <div className="flex items-center gap-1 text-sm">
-          <Star size={14} fill="black" />
-          <span>{rating?.toFixed(1) ?? 0}</span>
+          <p className="text-xs text-gray-400 capitalize">{category?.name}</p>
         </div>
-
-        {/* price */}
-
-        {/* tags */}
-        {/* {tags?.length > 0 && (
-          <div className="flex flex-wrap gap-1 pt-1">
-            {tags.map((t) => (
-              <span
-                key={t.id}
-                className="text-[10px] px-2 py-0.5 bg-gray-100 rounded-md text-gray-600"
-              >
-                {t.name}
-              </span>
-            ))}
-          </div>
-        )} */}
-
-        {/* category */}
-        <p className="text-xs text-gray-400 capitalize">{category?.name}</p>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 };
 

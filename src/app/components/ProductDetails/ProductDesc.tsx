@@ -165,23 +165,39 @@ const ProductDesc = ({ product }: ProductDescProps) => {
       </div>
 
       {/* REVIEWS SECTION */}
-      <div className="md:col-span-2 mt-10 border-t pt-6">
-        <h3 className="text-xl font-semibold mb-4">Customer Reviews</h3>
+      <div className="md:col-span-2 mt-12 border-t pt-8">
+        <h3 className="text-2xl font-semibold mb-6">Customer Reviews</h3>
 
         {reviews && reviews.length > 0 ? (
-          reviews.map((review: ReviewItem, index: number) => (
-            <div key={index} className="border-b pb-4 mb-4">
-              <div className="flex items-center gap-2">
-                <RatingStars rating={review.rating} />
-                <span className="text-sm text-gray-500">
-                  {review.reviewerName}
-                </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {reviews.map((review: ReviewItem, index: number) => (
+              <div
+                key={index}
+                className="p-6 bg-white border rounded-xl shadow-sm hover:shadow-md transition duration-300 flex flex-col"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  {/* Avatar */}
+                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-medium text-sm">
+                    {review.reviewerName?.charAt(0)}
+                  </div>
+
+                  <div className="flex flex-col">
+                    <p className="font-medium text-sm">{review.reviewerName}</p>
+                    <RatingStars rating={review.rating} />
+                  </div>
+                </div>
+
+                {/* Comment */}
+                <p className="text-gray-700 text-sm leading-relaxed flex-grow">
+                  {review.comment}
+                </p>
               </div>
-              <p className="text-gray-700 mt-2">{review.comment}</p>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
-          <p className="text-gray-500">No reviews yet.</p>
+          <div className="text-gray-500 bg-gray-50 p-6 rounded-lg text-center">
+            No reviews yet.
+          </div>
         )}
       </div>
     </div>

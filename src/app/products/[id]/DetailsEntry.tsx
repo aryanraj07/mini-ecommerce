@@ -8,12 +8,11 @@ const DetailsEntry = async ({
 }) => {
   const { id } = await params;
   const trpc = createPublicTRPCClient();
-  const data = await trpc.products.getSingleProduct.query({ id });
-  const relatedProducts = await trpc.products.getSimilarProducts.query({
-    productId: Number(id),
-  });
-  console.log(relatedProducts);
 
+  const [data, relatedProducts] = await Promise.all([
+    trpc.products.getSingleProduct.query({ id }),
+    trpc.products.getSimilarProducts.query({ productId: Number(id) }),
+  ]);
   return (
     <div className="max-w-7xl mx-auto p-6 ">
       <ProductDesc product={data.product} />

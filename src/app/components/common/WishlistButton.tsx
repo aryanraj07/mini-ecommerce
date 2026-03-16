@@ -4,14 +4,17 @@ import React from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
+import { showCustomToast } from "@/utils/showToast";
+import { useRouter } from "next/navigation";
 
 interface WishlistButtonProps {
   id: number;
   image: string | null;
 }
 
-const WishlistButton = ({ id }: WishlistButtonProps) => {
+const WishlistButton = ({ id, image }: WishlistButtonProps) => {
   const trpc = useTRPC();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const { data: wishlist = [] } = useQuery(
@@ -104,8 +107,12 @@ const WishlistButton = ({ id }: WishlistButtonProps) => {
 
     if (isWishlisted) {
       removeMutation.mutate({ productId: id });
+      showCustomToast("Item removed from wishlist", image, () =>
+        router.push("/cart"),
+      );
     } else {
       addMutation.mutate({ productId: id });
+      showCustomToast("Item wishlited", image, () => router.push("/cart"));
     }
   };
 

@@ -1,6 +1,7 @@
 "use client";
 import ProductCard from "../common/ProductCard";
 import ProductSkeleton from "../skelton/ProductSkelton";
+// import { Profiler } from "react";
 import { ProductPreview, ProductsOutput } from "@/types/types";
 interface ProductGridProps {
   products: ProductPreview[];
@@ -12,13 +13,26 @@ const ProductGrid = ({ products, isFetching }: ProductGridProps) => {
   }
 
   if (!products?.length) {
-    return <p>No products matched your search</p>;
+  return <p>No products matched your search</p>;
   }
+  // const onRenderCallback = (
+  //   id,
+  //   phase,
+  //   actualDuration,
+  //   baseDuration,
+  //   startTime,
+  //   commitTime,
+  //   interactions,
+  // ) => {
+  //   console.log({ id, phase, actualDuration, baseDuration });
+  // };
   return (
     <>
       {products.map((product: ProductPreview) => (
         <li key={product.id}>
+          {/* <Profiler id="ProductList" onRender={onRenderCallback}> */}
           <ProductCard product={product} showRemove={false} variant="default" />
+          {/* </Profiler> */}
         </li>
       ))}
     </>

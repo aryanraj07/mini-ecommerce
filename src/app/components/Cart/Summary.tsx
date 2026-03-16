@@ -1,5 +1,6 @@
 "use client";
 
+import { loadRazorpay } from "@/helpers/loadRazorpay";
 import { SummaryType } from "@/types/types";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
@@ -16,13 +17,15 @@ const Summary = ({ summary, selectedItems }: SummaryProps) => {
   const checkoutMutation = useMutation(trpc.order.checkout.mutationOptions());
 
   const handleCheckout = async () => {
-    const data = await checkoutMutation.mutateAsync({
-      cartItemsIds: selectedItems,
-    });
-    if (!(window as any).Razorpay) {
+    const sdkLoaded = await loadRazorpay();
+
+    if (!sdkLoaded) {
       alert("Razorpay SDK failed to load");
       return;
     }
+    const data = await checkoutMutation.mutateAsync({
+      cartItemsIds: selectedItems,
+    });
 
     const options = {
       key: data.key,

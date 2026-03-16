@@ -3,8 +3,8 @@ import toast from "react-hot-toast";
 
 export const showCustomToast = (
   message: string,
-  img: string,
-  onClick: () => void
+  img: string | null,
+  onClick: () => void,
 ) => {
   toast.custom((t) => (
     <div
@@ -20,7 +20,7 @@ export const showCustomToast = (
       transition-all hover:shadow-lg`}
     >
       <div className="relative w-10 h-10 bg-gray-100 rounded-md shadow-sm">
-        <Image src={img} alt="img" fill className="object-contain" />
+        {img && <Image src={img} alt="img" fill className="object-contain" />}
       </div>
 
       <div className="flex flex-col text-xs sm:text-sm text-gray-900 leading-tight">

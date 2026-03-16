@@ -12,19 +12,17 @@ const ProductPrice = ({
   variant,
 }: ProductPriceProps) => {
   return (
-    <>
-      <div className="flex items-center gap-2">
-        <span className="text-lg font-bold text-gray-900">
-          ${discountedPrice ? discountedPrice.toFixed(2) : price.toFixed(2)}
-        </span>
+    <div className="flex items-center gap-2">
+      <span className="text-base font-semibold text-gray-900">
+        ${discountedPrice ? discountedPrice.toFixed(2) : price.toFixed(2)}
+      </span>
 
-        {discountPercentage && (
-          <span className="text-sm line-through text-gray-400">
-            ${price.toFixed(2)}
-          </span>
-        )}
-      </div>
-    </>
+      {discountPercentage && (
+        <span className="text-sm line-through text-gray-400">
+          ${price.toFixed(2)}
+        </span>
+      )}
+    </div>
   );
 };
 
