@@ -1,7 +1,7 @@
 "use client";
 
-import ProductCard from "../common/ProductCard";
-import ProductSkeleton from "../skelton/ProductSkelton";
+import ProductCard from "@/app/components/common/ProductCard";
+import ProductSkeleton from "@/app/components/skelton/ProductSkelton";
 // import { Profiler } from "react";
 import { ProductPreview } from "@/types/types";
 interface ProductGridProps {

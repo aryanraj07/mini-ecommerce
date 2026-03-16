@@ -6,10 +6,9 @@ import { Star } from "lucide-react";
 import WishlistButton from "./WishlistButton";
 import { ProductItem, ProductPreview, WishlistItem } from "@/types/types";
 
-import ProductImage from "../product/ProductImage";
-import ProductMeta from "../product/ProductMeta";
-import ProductPrice from "../product/ProductPrice";
-import ProudctAction from "../product/ProudctAction";
+import ProductImage from "@/app/components/product/ProductImage";
+import ProductMeta from "@/app/components/product/ProductMeta";
+import ProductPrice from "@/app/components/product/ProductPrice";
 interface ProductCardProps {
   product: ProductPreview;
   variant: "default" | "wishlist";

@@ -1,8 +1,6 @@
 import { Suspense } from "react";
-import ProductSkeleton from "../components/skelton/ProductSkelton";
-import ProductPageClient from "../components/product/ProductPageClient";
-import { createPublicTRPCClient } from "@/utils/fetchServerData";
-import { cacheTag, cacheLife } from "next/cache";
+import ProductSkeleton from "@/app/components/skelton/ProductSkelton";
+import ProductPageClient from "@/app/components/product/ProductPageClient";
 import { getProducts } from "@/helpers/getProducts";
 
 export default async function Page() {
