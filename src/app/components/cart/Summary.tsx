@@ -1,8 +1,8 @@
 "use client";
 
 import { loadRazorpay } from "@/helpers/loadRazorpay";
-import { SummaryType } from "@/types/types";
-import { useTRPC } from "@/utils/trpc";
+import { CheckoutOutput, SummaryType } from "@/types/types";
+import { useTRPC, useTRPCClient } from "@/utils/trpc";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
@@ -12,9 +12,15 @@ interface SummaryProps {
 }
 
 const Summary = ({ summary, selectedItems }: SummaryProps) => {
-  const trpc = useTRPC();
+  const trpcClient = useTRPCClient();
   const router = useRouter();
-  const checkoutMutation = useMutation(trpc.order.checkout.mutationOptions());
+  const checkoutMutation = useMutation<
+    CheckoutOutput, // 👈 your backend output type
+    unknown,
+    { cartItemsIds: number[] } // 👈 input type
+  >({
+    mutationFn: (variables) => trpcClient.order.checkout.mutate(variables),
+  });
 
   const handleCheckout = async () => {
     const sdkLoaded = await loadRazorpay();
