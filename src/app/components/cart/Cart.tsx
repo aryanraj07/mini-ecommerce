@@ -1,8 +1,5 @@
 "use client";
-import Image from "next/image";
-import { FaStar } from "react-icons/fa";
 import Summary from "./Summary";
-import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 
 import {
   AddToCartInput,
@@ -38,15 +35,8 @@ const Cart = () => {
     );
   };
 
-  const dispatch = useAppDispatch();
-
   const queryClient = useQueryClient();
-  const truncateText = (text: string, limit = 40) => {
-    if (!text) {
-      return "";
-    }
-    return text.length > limit ? text.slice(0, limit) + "..." : text;
-  };
+
   const invalidateCartAndSummary = () => {
     queryClient.invalidateQueries(cartQuery);
     queryClient.invalidateQueries({
@@ -54,7 +44,7 @@ const Cart = () => {
     });
   };
 
-  const { data, isFetching } = useQuery(trpc.cartItem.getCart.queryOptions());
+  const { data } = useQuery(cartQuery);
   const addMutation = useMutation(
     trpc.cartItem.addToCart.mutationOptions({
       async onMutate(variables: AddToCartInput) {
