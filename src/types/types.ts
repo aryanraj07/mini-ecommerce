@@ -23,6 +23,7 @@ export type CartItem = NonNullable<
 
 export type AddToCartInput = RouterInputs["cartItem"]["addToCart"];
 export type UpdateCartInput = RouterInputs["cartItem"]["updateQuantity"];
+export type RemoveCartInput = RouterInputs["cartItem"]["removeFromCart"];
 export type AddToWishlist = RouterInputs["wishlistItems"]["addToWishlist"];
 export type RemoveWishlist =
   RouterInputs["wishlistItems"]["removeFromWishList"];

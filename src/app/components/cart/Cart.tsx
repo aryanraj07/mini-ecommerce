@@ -3,17 +3,24 @@ import Image from "next/image";
 import { FaStar } from "react-icons/fa";
 import Summary from "./Summary";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { CartProduct } from "@/types/cartItem";
-import { AddToCartInput, UpdateCartInput } from "@/types/types";
+
+import {
+  AddToCartInput,
+  UpdateCartInput,
+  RemoveCartInput,
+} from "@/types/types";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ProductCard from "../common/ProductCard";
+
 import { CartItem } from "@/types/types";
 import CartItemCard from "./CartItemCard";
 import { useState } from "react";
-import { TRPCClientErrorLike } from "@trpc/client";
 type CartQueryData = {
   cartItem: CartItem[];
+};
+type RemoveContext = {
+  previousCart?: CartQueryData;
+  previousSelected?: number[];
 };
 const Cart = () => {
   const trpc = useTRPC();
@@ -138,7 +145,7 @@ const Cart = () => {
 
   const removeMutation = useMutation(
     trpc.cartItem.removeFromCart.mutationOptions({
-      async onMutate(variables) {
+      async onMutate(variables: RemoveCartInput): Promise<RemoveContext> {
         await queryClient.cancelQueries(cartQuery);
 
         const previousCart = queryClient.getQueryData(cartQuery.queryKey);
@@ -164,7 +171,11 @@ const Cart = () => {
         return { previousCart, previousSelected };
       },
 
-      onError(_, __, context) {
+      onError(
+        _: unknown,
+        __: RemoveCartInput,
+        context: RemoveContext | undefined,
+      ) {
         if (context?.previousCart) {
           queryClient.setQueryData(cartQuery.queryKey, context.previousCart);
         }
