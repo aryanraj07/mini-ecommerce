@@ -4,7 +4,7 @@ import { FaStar } from "react-icons/fa";
 import Summary from "./Summary";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { CartProduct } from "@/types/cartItem";
-
+import { AddToCartInput, UpdateCartInput } from "@/types/types";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ProductCard from "../common/ProductCard";
@@ -49,7 +49,7 @@ const Cart = () => {
   const { data, isFetching } = useQuery(trpc.cartItem.getCart.queryOptions());
   const addMutation = useMutation(
     trpc.cartItem.addToCart.mutationOptions({
-      async onMutate(variables) {
+      async onMutate(variables: AddToCartInput) {
         await queryClient.cancelQueries(cartQuery);
 
         const previousCart = queryClient.getQueryData(cartQuery.queryKey);
@@ -91,11 +91,9 @@ const Cart = () => {
   );
   const updateMutation = useMutation(
     trpc.cartItem.updateQuantity.mutationOptions({
-      async onMutate(variables) {
+      async onMutate(variables: UpdateCartInput) {
         await queryClient.cancelQueries(cartQuery);
-
         const previousCart = queryClient.getQueryData(cartQuery.queryKey);
-
         queryClient.setQueryData(
           cartQuery.queryKey,
           (old: CartQueryData | undefined) => {
@@ -103,7 +101,6 @@ const Cart = () => {
 
             const updatedItems = old.cartItem.map((item: CartItem) =>
               item.id === variables.cartItemId
-            
                 ? { ...item, quantity: variables.quantity ?? item.quantity }
                 : item,
             );

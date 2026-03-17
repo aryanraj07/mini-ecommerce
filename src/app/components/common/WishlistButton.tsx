@@ -1,12 +1,11 @@
 "use client";
-
 import React from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 import { showCustomToast } from "@/utils/showToast";
 import { useRouter } from "next/navigation";
-
+import { AddToWishlist, RemoveWishlist } from "@/types/types";
 interface WishlistButtonProps {
   id: number;
   image: string | null;
@@ -27,7 +26,7 @@ const WishlistButton = ({ id, image }: WishlistButtonProps) => {
 
   const addMutation = useMutation(
     trpc.wishlistItems.addToWishlist.mutationOptions({
-      onMutate: async (variables) => {
+      onMutate: async (variables: AddToWishlist) => {
         await queryClient.cancelQueries(
           trpc.wishlistItems.getWishlist.queryOptions(),
         );
@@ -66,7 +65,7 @@ const WishlistButton = ({ id, image }: WishlistButtonProps) => {
 
   const removeMutation = useMutation(
     trpc.wishlistItems.removeFromWishList.mutationOptions({
-      onMutate: async (variables) => {
+      onMutate: async (variables: RemoveWishlist) => {
         await queryClient.cancelQueries(
           trpc.wishlistItems.getWishlist.queryOptions(),
         );

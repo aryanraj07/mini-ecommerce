@@ -1,5 +1,6 @@
-import type { inferRouterOutputs } from "@trpc/server";
+import type { inferRouterOutputs, inferRouterInputs } from "@trpc/server";
 import { AppRouter } from "api-types";
+type RouterInputs = inferRouterInputs<AppRouter>;
 type RouterOutput = inferRouterOutputs<AppRouter>;
 export type User = RouterOutput["users"]["me"];
 export type ProductsOutput = RouterOutput["products"]["getAllProducts"];
@@ -19,6 +20,12 @@ export type ProductPreview = NonNullable<
 export type CartItem = NonNullable<
   RouterOutput["cartItem"]["getCart"]["cartItem"]
 >[number];
+
+export type AddToCartInput = RouterInputs["cartItem"]["addToCart"];
+export type UpdateCartInput = RouterInputs["cartItem"]["updateQuantity"];
+export type AddToWishlist = RouterInputs["wishlistItems"]["addToWishlist"];
+export type RemoveWishlist =
+  RouterInputs["wishlistItems"]["removeFromWishList"];
 export type SummaryType = RouterOutput["cartItem"]["getCartSummary"];
 export type FilterDataOutput = RouterOutput["filters"]["getFilterData"];
 export type OrderItem = NonNullable<
