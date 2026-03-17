@@ -11,6 +11,7 @@ import ProductCard from "../common/ProductCard";
 import { CartItem } from "@/types/types";
 import CartItemCard from "./CartItemCard";
 import { useState } from "react";
+import { TRPCClientErrorLike } from "@trpc/client";
 type CartQueryData = {
   cartItem: CartItem[];
 };
@@ -78,7 +79,11 @@ const Cart = () => {
         return { previousCart };
       },
 
-      onError(_, __, context) {
+      onError(
+        _error: unknown,
+        _variables: AddToCartInput,
+        context: { previousCart?: CartQueryData } | undefined,
+      ) {
         if (context?.previousCart) {
           queryClient.setQueryData(cartQuery.queryKey, context.previousCart);
         }
@@ -115,7 +120,11 @@ const Cart = () => {
         return { previousCart };
       },
 
-      onError(_, __, context) {
+      onError(
+        _error: unknown,
+        _variables: UpdateCartInput,
+        context: { previousCart?: CartQueryData } | undefined,
+      ) {
         if (context?.previousCart) {
           queryClient.setQueryData(cartQuery.queryKey, context.previousCart);
         }
