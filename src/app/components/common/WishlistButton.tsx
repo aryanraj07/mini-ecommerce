@@ -46,7 +46,11 @@ const WishlistButton = ({ id, image }: WishlistButtonProps) => {
         return { previous };
       },
 
-      onError: (_err: unknown, _vars: AddToWishlist, context) => {
+      onError: (
+        _err: unknown,
+        _vars: AddToWishlist,
+        context: { previous?: Wishlist } | undefined,
+      ) => {
         if (context?.previous) {
           queryClient.setQueryData(
             trpc.wishlistItems.getWishlist.queryKey(),
