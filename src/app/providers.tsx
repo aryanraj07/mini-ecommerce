@@ -27,6 +27,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       links: [
         httpBatchLink({
           url: `${process.env.NEXT_PUBLIC_API_URL}/trpc`,
+          // url: "http://localhost:8000/trpc",
           fetch(url, options) {
             return fetch(url, {
               ...options,

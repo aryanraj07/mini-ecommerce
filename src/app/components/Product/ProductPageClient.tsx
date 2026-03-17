@@ -100,8 +100,6 @@ const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
     console.log(categoryParam);
 
     if (categoryParam && categoryParam !== category[0]) {
-      alert("he");
-
       dispatch(setCategory([categoryParam]));
     }
   }, []);

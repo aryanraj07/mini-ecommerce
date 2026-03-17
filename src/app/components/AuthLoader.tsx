@@ -4,6 +4,7 @@ import { useAppDispatch } from "@/hooks/hooks";
 import { MeOutput } from "@/types/types";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { TRPCClientError } from "@trpc/client";
 import { useEffect, useRef } from "react";
 type MeResponse = {
   user: MeOutput;
@@ -29,7 +30,11 @@ const AuthLoader = () => {
       dispatch(setUser(data.user));
     }
 
-    if (meQuery.error?.data?.httpStatus === 401 && !hasRefreshed.current) {
+    if (
+      meQuery.error instanceof TRPCClientError &&
+      meQuery.error.data?.httpStatus === 401 &&
+      !hasRefreshed.current
+    ) {
       hasRefreshed.current = true;
       refreshMutation.mutate();
     }
