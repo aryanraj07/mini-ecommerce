@@ -14,6 +14,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CartItem } from "@/types/types";
 import CartItemCard from "./CartItemCard";
 import { useState } from "react";
+import { useAddToCart } from "@/hooks/useAddToCart";
 type CartQueryData = {
   cartItem: CartItem[];
 };
@@ -50,51 +51,7 @@ const Cart = () => {
 
   const { data } = useQuery(cartQuery);
 
-  const addMutation = useMutation<
-    { message: string },
-    unknown,
-    AddToCartInput,
-    { previousCart?: CartQueryData }
-  >({
-    mutationFn: (variables) => trpcClient.cartItem.addToCart.mutate(variables), // ✅ CORRECT
-
-    async onMutate(variables) {
-      await queryClient.cancelQueries(cartQuery);
-
-      const previousCart = queryClient.getQueryData(cartQuery.queryKey);
-
-      queryClient.setQueryData(
-        cartQuery.queryKey,
-        (old: CartQueryData | undefined) => {
-          if (!old) return old;
-
-          return {
-            ...old,
-            cartItem: old.cartItem.map((item) =>
-              item.productId === variables.productId
-                ? {
-                    ...item,
-                    quantity: item.quantity + (variables.quantity ?? 1),
-                  }
-                : item,
-            ),
-          };
-        },
-      );
-
-      return { previousCart };
-    },
-
-    onError(_error, _variables, context) {
-      if (context?.previousCart) {
-        queryClient.setQueryData(cartQuery.queryKey, context.previousCart);
-      }
-    },
-
-    onSettled() {
-      invalidateCartAndSummary();
-    },
-  });
+  const addMutation = useAddToCart();
   const updateMutation = useMutation<
     { message: string },
     unknown,
