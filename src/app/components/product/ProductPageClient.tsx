@@ -25,6 +25,7 @@ import PaginationButton from "../common/PaginationButton";
 import { ProductsOutput } from "@/types/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { buildProductUrl } from "@/utils/buildProductUrls";
+import { defaultProductQuery } from "@/helpers/getProducts";
 
 const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
   const dispatch = useAppDispatch();
@@ -36,27 +37,39 @@ const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
   const page = filters.page;
 
   const { sort, search } = useAppSelector((state) => state.filter);
-
+  // const queryInput = useMemo(
+  //   () => ({
+  //     min: priceRange.min ?? undefined,
+  //     max: priceRange.max ?? undefined,
+  //     category,
+  //     brand,
+  //     tag,
+  //     rating,
+  //     page,
+  //     limit: 20,
+  //     sort,
+  //     search,
+  //   }),
+  //   [priceRange, category, brand, tag, rating, page, sort, search],
+  // );
+  const queryInput = {
+    min: priceRange.min ?? undefined,
+    max: priceRange.max ?? undefined,
+    category,
+    brand,
+    tag,
+    rating,
+    page,
+    limit: 20,
+    sort,
+    search,
+  };
   const trpc = useTRPC();
-  const queryInput = useMemo(
-    () => ({
-      min: priceRange.min,
-      max: priceRange.max,
-      category,
-      brand,
-      tag,
-      rating,
-      page,
-      limit: 20,
-      sort,
-      search,
-    }),
-    [priceRange, category, brand, tag, rating, page, sort, search],
-  );
+
   const { data, isFetching } = useQuery(
     trpc.products.getAllProducts.queryOptions(queryInput, {
       initialData: page === 1 ? initialData : undefined,
-      staleTime: 60000,
+      // staleTime: 60000,
       retry: false,
       refetchOnWindowFocus: false,
     }),
@@ -70,27 +83,35 @@ const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
         behavior: "smooth",
       });
     }
-  }, [filters, sort]);
+  }, [page]);
   useEffect(() => {
     const url = buildProductUrl(filters, sort, search);
 
-    if (url !== window.location.pathname + window.location.search) {
-      router.replace(url);
+    const current = window.location.pathname + window.location.search;
+
+    if (url !== current) {
+      router.replace(url, { scroll: false }); // prevent scroll reset loop
     }
   }, [filters, sort, search]);
   const { total = 0 } = meta ?? {};
   useEffect(() => {
-    const category = searchParams.get("category");
-    if (category) {
-      dispatch(setCategory([category]));
+    const categoryParam = searchParams.get("category");
+
+    console.log(categoryParam);
+
+    if (categoryParam && categoryParam !== category[0]) {
+      alert("he");
+
+      dispatch(setCategory([categoryParam]));
     }
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     return () => {
-      if (pathname.startsWith("/products")) dispatch(clearFilters());
+      if (!window.location.pathname.startsWith("/products"))
+        dispatch(clearFilters());
     };
-  }, [pathname, dispatch]);
+  }, []);
   return (
     <div className="flex">
       <div className="w-72 sticky top-0 p-6 ">

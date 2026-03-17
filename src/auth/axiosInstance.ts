@@ -24,7 +24,11 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     // If 401 + not already retrying
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      originalRequest.url !== "/auth/refresh"
+    ) {
       originalRequest._retry = true;
 
       // If refresh already running, wait

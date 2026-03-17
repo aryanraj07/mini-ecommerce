@@ -1,10 +1,23 @@
-import { createPublicTRPCClient } from "@/utils/fetchServerData";
+// getProducts.ts
+
+import { createServerTRPCClient } from "@/utils/fetchServerData";
+
+export const defaultProductQuery = {
+  min: undefined,
+  max: undefined,
+  category: [],
+  brand: [],
+  tag: [],
+  rating: undefined,
+  page: 1,
+  limit: 20,
+  sort: undefined,
+  search: undefined,
+};
 
 export async function getProducts() {
-  const trpc = createPublicTRPCClient();
+  const trpc = createServerTRPCClient(null);
 
-  return trpc.products.getAllProducts.query({
-    page: 1,
-    limit: 20,
-  });
+  const result = await trpc.products.getAllProducts.query(defaultProductQuery);
+  return result;
 }

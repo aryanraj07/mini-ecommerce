@@ -4,8 +4,10 @@ import { useAppDispatch } from "@/hooks/hooks";
 import { MeOutput } from "@/types/types";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-
+import { useEffect, useRef } from "react";
+type MeResponse = {
+  user: MeOutput;
+};
 const AuthLoader = () => {
   const trpc = useTRPC();
   const dispatch = useAppDispatch();
@@ -14,20 +16,22 @@ const AuthLoader = () => {
       retry: false,
     }),
   );
-
-  const refreshMutations = useMutation(
+  const refreshMutation = useMutation(
     trpc.users.refresh.mutationOptions({
       onSuccess: () => meQuery.refetch(),
     }),
   );
+  const hasRefreshed = useRef(false);
 
   useEffect(() => {
-    if (meQuery.data && "user" in meQuery.data) {
-      dispatch(setUser(meQuery.data.user));
+    const data = meQuery.data as MeResponse | undefined;
+    if (data?.user) {
+      dispatch(setUser(data.user));
     }
 
-    if (meQuery.error?.data?.httpStatus === 401) {
-      refreshMutations.mutate();
+    if (meQuery.error?.data?.httpStatus === 401 && !hasRefreshed.current) {
+      hasRefreshed.current = true;
+      refreshMutation.mutate();
     }
   }, [meQuery.data, meQuery.error]);
   return null;

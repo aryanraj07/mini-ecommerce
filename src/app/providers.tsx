@@ -1,9 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { TRPCProvider } from "@/utils/trpc";
 import { AppRouter } from "api-types";
+import React, { useState } from "react";
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
@@ -17,26 +20,13 @@ function makeQueryClient() {
     },
   });
 }
-let browserQueryClient: QueryClient | undefined = undefined;
-function getQueryClient() {
-  if (typeof window !== "undefined") {
-    return makeQueryClient();
-  } else {
-    // Browser: make a new query client if we don't already have one
-    // This is very important, so we don't re-make a new client if React
-    // suspends during the initial render. This may not be needed if we
-    // have a suspense boundary BELOW the creation of the query client
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
-    return browserQueryClient;
-  }
-}
-const ReactQueryProvider = ({ children }: { children: React.ReactNode }) => {
-  const [queryClient] = useState(() => getQueryClient());
+export default function Providers({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(() => makeQueryClient());
   const [trpcClient] = useState(() =>
     createTRPCClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: "http://localhost:8000/trpc",
+          url: `${process.env.NEXT_PUBLIC_API_URL}/trpc`,
           fetch(url, options) {
             return fetch(url, {
               ...options,
@@ -50,10 +40,23 @@ const ReactQueryProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-        {children}
+        <Provider store={store}>
+          {children}
+
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              duration: 2000,
+              style: {
+                background: "#222",
+                color: "#fff",
+                borderRadius: "12px",
+                fontSize: "14px",
+              },
+            }}
+          />
+        </Provider>
       </TRPCProvider>
     </QueryClientProvider>
   );
-};
-
-export default ReactQueryProvider;
+}

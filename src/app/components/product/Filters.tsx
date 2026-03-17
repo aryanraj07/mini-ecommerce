@@ -45,6 +45,7 @@ const Filters = () => {
 
   const available = useAppSelector((state) => state.filter.available);
   const selected = useAppSelector((state) => state.filter.selected);
+  console.log(available);
 
   const {
     categories = [],

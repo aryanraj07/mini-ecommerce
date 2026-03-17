@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import ReactQueryProvider from "@/provider/ReactQueryProvider";
 import AuthLoader from "./components/AuthLoader";
 import FiltersHydrator from "./components/FiltersHydrator";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Mini Ecommerce App",
@@ -21,16 +22,18 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ReactQueryProvider>
-          <ReduxProvider>
-            <Suspense fallback={null}>
-              <FiltersHydrator />
-            </Suspense>
-            <AuthLoader />
+        <Providers>
+          <AuthLoader />
+          <Suspense fallback={null}>
+            <FiltersHydrator />
+          </Suspense>
+
+          <Suspense fallback={null}>
             <Header />
-            <main className="pt-16">{children}</main>
-          </ReduxProvider>
-        </ReactQueryProvider>
+          </Suspense>
+
+          <main className="pt-16">{children}</main>
+        </Providers>
       </body>
     </html>
   );

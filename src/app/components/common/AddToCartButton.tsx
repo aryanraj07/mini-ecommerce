@@ -75,7 +75,6 @@ const AddToCartButton = ({
   );
   const router = useRouter();
   const handleAddToCart = () => {
-    console.log("CLICKED");
     // if is authenitcated call the api
     //  else dispatch the addTocart
 

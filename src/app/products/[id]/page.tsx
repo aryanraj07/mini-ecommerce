@@ -1,6 +1,4 @@
 import DetailsEntry from "@/app/products/[id]/DetailsEntry";
-import { Suspense } from "react";
-import ProductDetailsSkeleton from "@/app/components/productDetails/ProductDetailsSkelton";
 interface PageProps {
   params: Promise<{ id: string }>;
 }
