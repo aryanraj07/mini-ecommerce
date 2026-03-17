@@ -7,7 +7,7 @@ interface ProductsPageClientProps {
   initialData: ProductsOutput;
 }
 
-import Filters from "./Filters";
+import Filters from "@/app/components/product/Filters";
 import ProductGrid from "./ProductGrid";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Dropdown from "../Dropdown";
