@@ -6,6 +6,7 @@ import {
   UpdateCartInput,
   RemoveCartInput,
   CartItems,
+  CartSummary,
 } from "@/types/types";
 import { useTRPC, useTRPCClient } from "@/utils/trpc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -25,12 +26,13 @@ const Cart = () => {
   const trpcClient = useTRPCClient();
   const cartQuery = trpc.cartItem.getCart.queryOptions();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const { data: summary } = useQuery(
+  const { data: summaryData } = useQuery(
     trpc.cartItem.getCartSummary.queryOptions(
       { cartItemIds: selectedItems },
       { enabled: selectedItems.length > 0 },
     ),
   );
+  const summary = summaryData as CartSummary | undefined;
   const handleSelect = (id: number) => {
     setSelectedItems((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],

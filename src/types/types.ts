@@ -21,6 +21,7 @@ export type CartItem = NonNullable<
   RouterOutput["cartItem"]["getCart"]["cartItem"]
 >[number];
 export type CartItems = RouterOutput["cartItem"]["getCart"];
+export type CartSummary = RouterOutput["cartItem"]["getCartSummary"];
 
 export type AddToCartInput = RouterInputs["cartItem"]["addToCart"];
 export type UpdateCartInput = RouterInputs["cartItem"]["updateQuantity"];
