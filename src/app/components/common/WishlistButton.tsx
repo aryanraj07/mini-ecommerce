@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 import { showCustomToast } from "@/utils/showToast";
 import { useRouter } from "next/navigation";
-import { AddToWishlist, RemoveWishlist } from "@/types/types";
+import { AddToWishlist, RemoveWishlist, Wishlist } from "@/types/types";
 interface WishlistButtonProps {
   id: number;
   image: string | null;
@@ -16,13 +16,13 @@ const WishlistButton = ({ id, image }: WishlistButtonProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data: wishlist = [] } = useQuery(
+  const { data = [] } = useQuery(
     trpc.wishlistItems.getWishlist.queryOptions(undefined, {
       staleTime: 1000 * 60 * 5,
     }),
   );
-  const wishlistSet = new Set(wishlist);
-  const isWishlisted = wishlistSet.has(id);
+  const wishlist = (data as Wishlist | undefined) ?? [];
+  const isWishlisted = new Set(wishlist).has(id);
 
   const addMutation = useMutation(
     trpc.wishlistItems.addToWishlist.mutationOptions({
@@ -46,7 +46,7 @@ const WishlistButton = ({ id, image }: WishlistButtonProps) => {
         return { previous };
       },
 
-      onError: (_err, _vars, context) => {
+      onError: (_err: unknown, _vars: AddToWishlist, context) => {
         if (context?.previous) {
           queryClient.setQueryData(
             trpc.wishlistItems.getWishlist.queryKey(),

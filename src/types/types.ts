@@ -38,3 +38,4 @@ export type OrderItem = NonNullable<
 export type OrderItemItem = NonNullable<
   RouterOutput["order"]["getMyOrders"]
 >[number];
+export type Wishlist = RouterOutput["wishlistItems"]["getWishlist"];
