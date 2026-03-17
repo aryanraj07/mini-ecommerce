@@ -5,6 +5,7 @@ import {
   AddToCartInput,
   UpdateCartInput,
   RemoveCartInput,
+  CartItems,
 } from "@/types/types";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -181,7 +182,7 @@ const Cart = () => {
       },
     }),
   );
-  const cartItems = data?.cartItem ?? [];
+  const cartItems = (data as CartQueryData | undefined)?.cartItem ?? [];
   return (
     <div className="container-custom py-10">
       <div className="flex flex-col lg:flex-row gap-8">
