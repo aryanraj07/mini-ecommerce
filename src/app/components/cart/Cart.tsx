@@ -7,7 +7,7 @@ import {
   RemoveCartInput,
   CartItems,
 } from "@/types/types";
-import { useTRPC } from "@/utils/trpc";
+import { useTRPC, useTRPCClient } from "@/utils/trpc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { CartItem } from "@/types/types";
@@ -22,6 +22,7 @@ type RemoveContext = {
 };
 const Cart = () => {
   const trpc = useTRPC();
+  const trpcClient = useTRPCClient();
   const cartQuery = trpc.cartItem.getCart.queryOptions();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const { data: summary } = useQuery(
@@ -46,142 +47,146 @@ const Cart = () => {
   };
 
   const { data } = useQuery(cartQuery);
-  const addMutation = useMutation(
-    trpc.cartItem.addToCart.mutationOptions({
-      async onMutate(variables: AddToCartInput) {
-        await queryClient.cancelQueries(cartQuery);
 
-        const previousCart = queryClient.getQueryData(cartQuery.queryKey);
+  const addMutation = useMutation<
+    { message: string },
+    unknown,
+    AddToCartInput,
+    { previousCart?: CartQueryData }
+  >({
+    mutationFn: (variables) => trpcClient.cartItem.addToCart.mutate(variables), // ✅ CORRECT
 
-        queryClient.setQueryData(
-          cartQuery.queryKey,
-          (old: CartQueryData | undefined) => {
-            if (!old) return old;
+    async onMutate(variables) {
+      await queryClient.cancelQueries(cartQuery);
 
-            const updatedItems = old.cartItem.map((item: CartItem) =>
+      const previousCart = queryClient.getQueryData(cartQuery.queryKey);
+
+      queryClient.setQueryData(
+        cartQuery.queryKey,
+        (old: CartQueryData | undefined) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            cartItem: old.cartItem.map((item) =>
               item.productId === variables.productId
                 ? {
                     ...item,
                     quantity: item.quantity + (variables.quantity ?? 1),
                   }
                 : item,
-            );
+            ),
+          };
+        },
+      );
 
-            return {
-              ...old,
-              cartItem: updatedItems,
-            };
-          },
-        );
+      return { previousCart };
+    },
 
-        return { previousCart };
-      },
+    onError(_error, _variables, context) {
+      if (context?.previousCart) {
+        queryClient.setQueryData(cartQuery.queryKey, context.previousCart);
+      }
+    },
 
-      onError(
-        _error: unknown,
-        _variables: AddToCartInput,
-        context: { previousCart?: CartQueryData } | undefined,
-      ) {
-        if (context?.previousCart) {
-          queryClient.setQueryData(cartQuery.queryKey, context.previousCart);
-        }
-      },
+    onSettled() {
+      invalidateCartAndSummary();
+    },
+  });
+  const updateMutation = useMutation<
+    { message: string },
+    unknown,
+    UpdateCartInput,
+    { previousCart?: CartQueryData }
+  >({
+    mutationFn: (variables) =>
+      trpcClient.cartItem.updateQuantity.mutate(variables),
 
-      onSettled() {
-        invalidateCartAndSummary();
-      },
-    }),
-  );
-  const updateMutation = useMutation(
-    trpc.cartItem.updateQuantity.mutationOptions({
-      async onMutate(variables: UpdateCartInput) {
-        await queryClient.cancelQueries(cartQuery);
-        const previousCart = queryClient.getQueryData(cartQuery.queryKey);
-        queryClient.setQueryData(
-          cartQuery.queryKey,
-          (old: CartQueryData | undefined) => {
-            if (!old) return old;
+    async onMutate(variables) {
+      await queryClient.cancelQueries(cartQuery);
 
-            const updatedItems = old.cartItem.map((item: CartItem) =>
+      const previousCart = queryClient.getQueryData(cartQuery.queryKey);
+
+      queryClient.setQueryData(
+        cartQuery.queryKey,
+        (old: CartQueryData | undefined) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            cartItem: old.cartItem.map((item) =>
               item.id === variables.cartItemId
                 ? { ...item, quantity: variables.quantity ?? item.quantity }
                 : item,
-            );
+            ),
+          };
+        },
+      );
 
-            return {
-              ...old,
-              cartItem: updatedItems,
-            };
-          },
-        );
+      return { previousCart };
+    },
 
-        return { previousCart };
-      },
+    onError(_error, _variables, context) {
+      if (context?.previousCart) {
+        queryClient.setQueryData(cartQuery.queryKey, context.previousCart);
+      }
+    },
 
-      onError(
-        _error: unknown,
-        _variables: UpdateCartInput,
-        context: { previousCart?: CartQueryData } | undefined,
-      ) {
-        if (context?.previousCart) {
-          queryClient.setQueryData(cartQuery.queryKey, context.previousCart);
-        }
-      },
+    onSettled() {
+      invalidateCartAndSummary();
+    },
+  });
 
-      onSettled() {
-        invalidateCartAndSummary();
-      },
-    }),
-  );
+  const removeMutation = useMutation<
+    { message: string },
+    unknown,
+    RemoveCartInput,
+    RemoveContext
+  >({
+    mutationFn: (variables) =>
+      trpcClient.cartItem.removeFromCart.mutate(variables),
 
-  const removeMutation = useMutation(
-    trpc.cartItem.removeFromCart.mutationOptions({
-      async onMutate(variables: RemoveCartInput): Promise<RemoveContext> {
-        await queryClient.cancelQueries(cartQuery);
+    async onMutate(variables) {
+      await queryClient.cancelQueries(cartQuery);
 
-        const previousCart = queryClient.getQueryData(cartQuery.queryKey);
-        const previousSelected = selectedItems;
-        queryClient.setQueryData(
-          cartQuery.queryKey,
-          (old: CartQueryData | undefined) => {
-            if (!old) return old;
+      const previousCart = queryClient.getQueryData(cartQuery.queryKey);
+      const previousSelected = selectedItems;
 
-            const updatedItems = old.cartItem.filter(
-              (item: CartItem) => item.id !== variables.cartItemId,
-            );
+      queryClient.setQueryData(
+        cartQuery.queryKey,
+        (old: CartQueryData | undefined) => {
+          if (!old) return old;
 
-            return {
-              ...old,
-              cartItem: updatedItems,
-            };
-          },
-        );
-        setSelectedItems((prev) =>
-          prev.filter((id) => id !== variables.cartItemId),
-        );
-        return { previousCart, previousSelected };
-      },
+          return {
+            ...old,
+            cartItem: old.cartItem.filter(
+              (item) => item.id !== variables.cartItemId,
+            ),
+          };
+        },
+      );
 
-      onError(
-        _: unknown,
-        __: RemoveCartInput,
-        context: RemoveContext | undefined,
-      ) {
-        if (context?.previousCart) {
-          queryClient.setQueryData(cartQuery.queryKey, context.previousCart);
-        }
-        if (context?.previousSelected) {
-          if (context?.previousSelected) {
-            setSelectedItems(context.previousSelected);
-          }
-        }
-      },
+      setSelectedItems((prev) =>
+        prev.filter((id) => id !== variables.cartItemId),
+      );
 
-      onSettled() {
-        invalidateCartAndSummary();
-      },
-    }),
-  );
+      return { previousCart, previousSelected };
+    },
+
+    onError(_error, _variables, context) {
+      if (context?.previousCart) {
+        queryClient.setQueryData(cartQuery.queryKey, context.previousCart);
+      }
+
+      if (context?.previousSelected) {
+        setSelectedItems(context.previousSelected);
+      }
+    },
+
+    onSettled() {
+      invalidateCartAndSummary();
+    },
+  });
   const cartItems = (data as CartQueryData | undefined)?.cartItem ?? [];
   return (
     <div className="container-custom py-10">
