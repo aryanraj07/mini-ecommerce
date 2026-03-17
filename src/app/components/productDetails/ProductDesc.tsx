@@ -9,7 +9,6 @@ import { ProductItem, ReviewItem, TagItem } from "@/types/types";
 interface ProductDescProps {
   product: ProductItem;
 }
-
 const ProductDesc = ({ product }: ProductDescProps) => {
   const {
     id,
@@ -26,7 +25,6 @@ const ProductDesc = ({ product }: ProductDescProps) => {
     tags = [],
     reviews = [],
   } = product;
-
   const productImages: string[] =
     images && images.length > 0
       ? images.filter(Boolean)
@@ -35,17 +33,14 @@ const ProductDesc = ({ product }: ProductDescProps) => {
         : [];
   const [selectedImage, setSelectedImage] = useState(productImages[0]);
   const [zoomStyle, setZoomStyle] = useState<CSSProperties>({});
-
   const discountedPrice =
     discountPercentage && price - (price * discountPercentage) / 100;
-
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const { left, top, width, height } =
       e.currentTarget.getBoundingClientRect();
 
     const x = ((e.clientX - left) / width) * 100;
     const y = ((e.clientY - top) / height) * 100;
-
     setZoomStyle({
       backgroundImage: `url(${selectedImage})`,
       backgroundPosition: `${x}% ${y}%`,

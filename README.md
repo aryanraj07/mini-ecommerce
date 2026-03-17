@@ -42,3 +42,10 @@ const { data, isLoading } = useQuery(
   ),
 );
 ```
+
+command to move the file name is
+
+```node
+ git mv src/app/components/ProductDetails src/app/components/temp
+
+```

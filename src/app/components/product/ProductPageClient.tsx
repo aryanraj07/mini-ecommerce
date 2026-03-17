@@ -9,13 +9,12 @@ interface ProductsPageClientProps {
 
 import Filters from "@/app/components/product/Filters";
 import ProductGrid from "./ProductGrid";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import Dropdown from "../Dropdown";
 import { sortedOptions } from "@/constants";
 import {
   clearFilters,
   setCategory,
-  setSearch,
   setSortValue,
 } from "@/features/filters/filterSlice";
 
@@ -25,7 +24,6 @@ import PaginationButton from "../common/PaginationButton";
 import { ProductsOutput } from "@/types/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { buildProductUrl } from "@/utils/buildProductUrls";
-import { defaultProductQuery } from "@/helpers/getProducts";
 
 const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
   const dispatch = useAppDispatch();
