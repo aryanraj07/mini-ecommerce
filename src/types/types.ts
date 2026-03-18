@@ -17,6 +17,9 @@ export type TagItem = NonNullable<
 export type ProductPreview = NonNullable<
   RouterOutput["products"]["getAllProducts"]["products"]
 >[number];
+
+// cart
+export type CartOutput = RouterOutput["cartItem"]["getCart"];
 export type CartItem = NonNullable<
   RouterOutput["cartItem"]["getCart"]["cartItem"]
 >[number];

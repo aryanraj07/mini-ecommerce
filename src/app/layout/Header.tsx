@@ -15,6 +15,7 @@ import { setUser } from "@/features/user/userSlice";
 import { setSearch } from "@/features/filters/filterSlice";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CartOutput } from "@/types/types";
 const Header = () => {
   const router = useRouter();
   const [showSearch, setShowSearch] = useState(false);
@@ -48,7 +49,10 @@ const Header = () => {
     }),
   );
   const cartCount =
-    data?.cartItem.reduce((total, item) => total + item.quantity, 0) ?? 0;
+    (data as CartOutput | undefined)?.cartItem.reduce(
+      (total, item) => total + item.quantity,
+      0,
+    ) ?? 0;
   const logoutMutation = useMutation(trpc.users.logout.mutationOptions());
   const handleLogout = () => {
     logoutMutation.mutate(undefined, {
