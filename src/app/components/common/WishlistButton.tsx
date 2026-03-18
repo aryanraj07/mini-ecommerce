@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 import { showCustomToast } from "@/utils/showToast";
 import { useRouter } from "next/navigation";
-import { AddToWishlist, RemoveWishlist, Wishlist } from "@/types/types";
+import { AddToWishlist, RemoveWishlist, WishlistItem } from "@/types/types";
 import { useWishlist } from "@/hooks/useWishlist";
 interface WishlistButtonProps {
   id: number;
@@ -22,7 +22,7 @@ const WishlistButton = ({ id, image }: WishlistButtonProps) => {
       staleTime: 1000 * 60 * 5,
     }),
   );
-  const wishlist = (data as Wishlist | undefined) ?? [];
+  const wishlist = (data as WishlistItem | undefined) ?? [];
   const isWishlisted = new Set(wishlist).has(id);
   const { addToWishlist, removeFromWishlist } = useWishlist();
 
