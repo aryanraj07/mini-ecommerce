@@ -2,7 +2,7 @@
 export const dynamic = "force-dynamic";
 
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { Query, useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 import Image from "next/image";
 import OrderTimeline from "@/app/components/OrderDetails/OrderTimeline";
@@ -15,17 +15,15 @@ export default function OrderSinglePage({ orderId }: OrderSinglePageProps) {
   const router = useRouter();
   //   const { orderId } = useParams();
   const trpc = useTRPC();
+  const shouldRefetch = (data?: OrderbyIdOutput) =>
+    data?.paymentStatus === "PENDING" ? 2000 : false;
 
   const { data, isLoading } = useQuery(
     trpc.order.getOrdderById.queryOptions(
       { orderId: Number(orderId) },
       {
         enabled: !!orderId,
-        refetchInterval: (query) =>
-          (query.state.data as OrderbyIdOutput | undefined)?.paymentStatus ===
-          "PENDING"
-            ? 2000
-            : false,
+        refetchInterval: (query: any) => shouldRefetch(query.state.data),
       },
     ),
   );
