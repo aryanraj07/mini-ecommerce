@@ -11,6 +11,11 @@ import { OrderbyIdOutput } from "@/types/types";
 interface OrderSinglePageProps {
   orderId: string;
 }
+type RefetchQuery = {
+  state: {
+    data?: OrderbyIdOutput;
+  };
+};
 export default function OrderSinglePage({ orderId }: OrderSinglePageProps) {
   const router = useRouter();
   //   const { orderId } = useParams();
@@ -23,7 +28,8 @@ export default function OrderSinglePage({ orderId }: OrderSinglePageProps) {
       { orderId: Number(orderId) },
       {
         enabled: !!orderId,
-        refetchInterval: (query: any) => shouldRefetch(query.state.data),
+        refetchInterval: (query: RefetchQuery) =>
+          shouldRefetch(query.state.data),
       },
     ),
   );
