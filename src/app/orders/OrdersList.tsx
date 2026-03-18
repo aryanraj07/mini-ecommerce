@@ -2,7 +2,7 @@ import { createServerTRPCClient } from "@/utils/fetchServerData";
 import { headers } from "next/headers";
 import Link from "next/link";
 import OrderCard from "../components/order/OrderCard";
-import { OrdersOutput } from "@/types/types";
+import { OrderItem, OrdersOutput } from "@/types/types";
 
 export default async function OrdersList() {
   const headerStore = await headers();
@@ -18,7 +18,7 @@ export default async function OrdersList() {
 
   return (
     <div className="space-y-6">
-      {orders.map((order) => (
+      {orders.map((order: OrderItem) => (
         <Link
           key={order.id}
           href={`/orders/${order.id}`}
