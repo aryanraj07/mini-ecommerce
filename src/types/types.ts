@@ -54,4 +54,4 @@ export type OrderItem = NonNullable<
 >[number];
 export type OrderItemItems = NonNullable<
   RouterOutput["order"]["getMyOrders"]
->[number]["items"];
+>[number]["items"][number];

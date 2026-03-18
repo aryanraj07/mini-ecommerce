@@ -80,7 +80,7 @@ export default function OrderSinglePage({ orderId }: OrderSinglePageProps) {
         <h2 className="text-lg font-semibold mb-4">Items in this order</h2>
 
         <div className="space-y-6">
-          {order.items.map((item) => (
+          {order.items.map((item: OrderItemItems) => (
             <div
               key={item.id}
               className="flex gap-6 border-b pb-6 cursor-pointer"
