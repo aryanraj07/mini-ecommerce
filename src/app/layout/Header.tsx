@@ -50,7 +50,7 @@ const Header = () => {
   );
   const cartCount =
     (data as CartOutput | undefined)?.cartItem.reduce(
-      (total, item) => total + item.quantity,
+      (total: number, item) => total + item.quantity,
       0,
     ) ?? 0;
   const logoutMutation = useMutation(trpc.users.logout.mutationOptions());
