@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useTRPC } from "@/utils/trpc";
 
 import { useQuery } from "@tanstack/react-query";
-import { WishlistItem } from "@/types/types";
+import { ProductsOutput, WishlistItem } from "@/types/types";
 
 const Wishlist = () => {
   const trpc = useTRPC();
@@ -21,7 +21,7 @@ const Wishlist = () => {
       },
     ),
   );
-  const products = productsData?.products ?? [];
+  const products = (productsData as ProductsOutput)?.products ?? [];
   if (isLoading) {
     return (
       <div>
