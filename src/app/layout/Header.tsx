@@ -48,11 +48,10 @@ const Header = () => {
       refetchOnWindowFocus: false,
     }),
   );
-  const cart = data as CartOutput | undefined;
-
-  const cartCount =
-    cart?.cartItem.reduce((total: number, item) => total + item.quantity, 0) ??
-    0;
+  const cartCount = ((data as CartOutput | undefined)?.cartItem ?? []).reduce(
+    (total: number, item: CartItem) => total + item.quantity,
+    0,
+  );
 
   const logoutMutation = useMutation(trpc.users.logout.mutationOptions());
   const handleLogout = () => {
