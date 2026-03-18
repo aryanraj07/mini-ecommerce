@@ -60,8 +60,9 @@ const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
       refetchOnWindowFocus: false,
     }),
   );
-  const products = (data as ProductsOutput)?.products ?? [];
-  const meta = data?.meta;
+  const { products = [], meta } = data as ProductsOutput;
+  // const products = (data as ProductsOutput)?.products ?? [];
+  // const meta = (data as ProductsOutput)?.meta;
   useEffect(() => {
     if (typeof window !== "undefined") {
       window.scrollTo({
