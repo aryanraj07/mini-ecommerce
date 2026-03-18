@@ -5,12 +5,14 @@ import { Suspense, useEffect, useState } from "react";
 import { useTRPC } from "@/utils/trpc";
 
 import { useQuery } from "@tanstack/react-query";
+import { WishlistItem } from "@/types/types";
 
 const Wishlist = () => {
   const trpc = useTRPC();
-  const { data: wishlistIds = [], isLoading } = useQuery(
+  const { data: wishlistData = [], isLoading } = useQuery(
     trpc.wishlistItems.getWishlist.queryOptions(),
   );
+  const wishlistIds = wishlistData as WishlistItem;
   const { data: productsData } = useQuery(
     trpc.products.getAllProducts.queryOptions(
       { ids: wishlistIds },
