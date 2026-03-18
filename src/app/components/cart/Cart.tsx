@@ -1,13 +1,7 @@
 "use client";
 import Summary from "./Summary";
 
-import {
-  AddToCartInput,
-  UpdateCartInput,
-  RemoveCartInput,
-  CartItems,
-  CartSummary,
-} from "@/types/types";
+import { UpdateCartInput, RemoveCartInput, CartSummary } from "@/types/types";
 import { useTRPC, useTRPCClient } from "@/utils/trpc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 

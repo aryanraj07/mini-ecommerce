@@ -6,10 +6,17 @@ import toast from "react-hot-toast";
 import "@/styles/Login.css";
 import { FaMobileAlt } from "react-icons/fa";
 import { useAppDispatch } from "@/hooks/hooks";
-import { useTRPC } from "@/utils/trpc";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTRPC, useTRPCClient } from "@/utils/trpc";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  SendOtpOutput,
+  UsersendOtpInput,
+  UserVerifyOtpInput,
+  VerifyOtpOutput,
+} from "@/types/types";
 
 const LoginPopup = () => {
+  const trpcClient = useTRPCClient();
   const OTP_LENGTH = 6;
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errMsg, setErrMsg] = useState("");
@@ -72,7 +79,11 @@ const LoginPopup = () => {
     setPhoneNumber(mobilenumber);
   };
 
-  const sendOtpMutation = useMutation(trpc.users.sendOtp.mutationOptions());
+  const sendOtpMutation = useMutation<SendOtpOutput, unknown, UsersendOtpInput>(
+    {
+      mutationFn: (variables) => trpcClient.users.sendOtp.mutate(variables),
+    },
+  );
   const handleSendOtp = () => {
     if (!isValidPhone || !termsAndPolicy) return;
 
@@ -95,7 +106,13 @@ const LoginPopup = () => {
       },
     );
   };
-  const verifyOtpMutation = useMutation(trpc.users.verifyOtp.mutationOptions());
+  const verifyOtpMutation = useMutation<
+    VerifyOtpOutput,
+    unknown,
+    UserVerifyOtpInput
+  >({
+    mutationFn: (variables) => trpcClient.users.verifyOtp.mutate(variables),
+  });
   const mergeCartMutation = useMutation(
     trpc.cartItem.mergeCart.mutationOptions(),
   );

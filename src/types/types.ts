@@ -39,3 +39,8 @@ export type OrderItemItem = NonNullable<
   RouterOutput["order"]["getMyOrders"]
 >[number];
 export type Wishlist = RouterOutput["wishlistItems"]["getWishlist"];
+// login
+export type UsersendOtpInput = RouterInputs["users"]["sendOtp"];
+export type UserVerifyOtpInput = RouterInputs["users"]["verifyOtp"];
+export type SendOtpOutput = RouterOutput["users"]["sendOtp"];
+export type VerifyOtpOutput = RouterOutput["users"]["verifyOtp"];
