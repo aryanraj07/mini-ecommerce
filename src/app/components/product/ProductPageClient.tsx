@@ -9,11 +9,12 @@ interface ProductsPageClientProps {
 
 import Filters from "@/app/components/product/Filters";
 import ProductGrid from "./ProductGrid";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Dropdown from "../Dropdown";
 import { sortedOptions } from "@/constants";
 import {
   clearFilters,
+  setAvailableFilters,
   setCategory,
   setSortValue,
 } from "@/features/filters/filterSlice";
@@ -22,52 +23,39 @@ import { useTRPC } from "@/utils/trpc";
 import { useQuery } from "@tanstack/react-query";
 import PaginationButton from "../common/PaginationButton";
 import { ProductsOutput } from "@/types/types";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { buildProductUrl } from "@/utils/buildProductUrls";
 
 const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const pathname = usePathname();
   const router = useRouter();
   const filters = useAppSelector((state) => state.filter.selected);
   const { priceRange, category, brand, tag, rating } = filters;
   const page = filters.page;
+  const trpc = useTRPC();
 
   const { sort, search } = useAppSelector((state) => state.filter);
-  // const queryInput = useMemo(
-  //   () => ({
-  //     min: priceRange.min ?? undefined,
-  //     max: priceRange.max ?? undefined,
-  //     category,
-  //     brand,
-  //     tag,
-  //     rating,
-  //     page,
-  //     limit: 20,
-  //     sort,
-  //     search,
-  //   }),
-  //   [priceRange, category, brand, tag, rating, page, sort, search],
-  // );
-  const queryInput = {
-    min: priceRange.min ?? undefined,
-    max: priceRange.max ?? undefined,
-    category,
-    brand,
-    tag,
-    rating,
-    page,
-    limit: 20,
-    sort,
-    search,
-  };
-  const trpc = useTRPC();
+  const queryInput = useMemo(
+    () => ({
+      min: priceRange.min ?? undefined,
+      max: priceRange.max ?? undefined,
+      category,
+      brand,
+      tag,
+      rating,
+      page,
+      limit: 20,
+      sort,
+      search,
+    }),
+    [priceRange, category, brand, tag, rating, page, sort, search],
+  );
 
   const { data, isFetching } = useQuery(
     trpc.products.getAllProducts.queryOptions(queryInput, {
       initialData: page === 1 ? initialData : undefined,
-      // staleTime: 60000,
+      staleTime: 0,
       retry: false,
       refetchOnWindowFocus: false,
     }),
@@ -82,6 +70,9 @@ const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
       });
     }
   }, [page]);
+  useEffect(() => {
+    console.log("QUERY INPUT CHANGED", queryInput);
+  }, [queryInput]);
   useEffect(() => {
     const url = buildProductUrl(filters, sort, search);
 

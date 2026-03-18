@@ -16,6 +16,7 @@ const DetailsEntry = async ({
   ]);
   return (
     <div className="max-w-7xl mx-auto p-6 ">
+
       <ProductDesc product={data.product} />
       <RelatedProducts relatedProducts={relatedProducts.products} />
     </div>
