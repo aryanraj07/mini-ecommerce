@@ -60,7 +60,7 @@ const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
       refetchOnWindowFocus: false,
     }),
   );
-  const products = data?.products ?? [];
+  const products = (data as ProductsOutput)?.products ?? [];
   const meta = data?.meta;
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -70,9 +70,6 @@ const ProductPageClient = ({ initialData }: ProductsPageClientProps) => {
       });
     }
   }, [page]);
-  useEffect(() => {
-    console.log("QUERY INPUT CHANGED", queryInput);
-  }, [queryInput]);
   useEffect(() => {
     const url = buildProductUrl(filters, sort, search);
 
