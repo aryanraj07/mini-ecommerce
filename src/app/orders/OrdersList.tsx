@@ -2,6 +2,7 @@ import { createServerTRPCClient } from "@/utils/fetchServerData";
 import { headers } from "next/headers";
 import Link from "next/link";
 import OrderCard from "../components/order/OrderCard";
+import { OrdersOutput } from "@/types/types";
 
 export default async function OrdersList() {
   const headerStore = await headers();
@@ -9,7 +10,7 @@ export default async function OrdersList() {
 
   const trpc = createServerTRPCClient(cookie);
 
-  const orders = await trpc.order.getMyOrders.query();
+  const orders: OrdersOutput = await trpc.order.getMyOrders.query();
 
   if (!orders || orders.length === 0) {
     return <p>No orders found.</p>;
