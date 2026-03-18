@@ -6,6 +6,7 @@ import { useTRPC } from "@/utils/trpc";
 import { showCustomToast } from "@/utils/showToast";
 import { useRouter } from "next/navigation";
 import { AddToWishlist, RemoveWishlist, Wishlist } from "@/types/types";
+import { useWishlist } from "@/hooks/useWishlist";
 interface WishlistButtonProps {
   id: number;
   image: string | null;
@@ -23,98 +24,19 @@ const WishlistButton = ({ id, image }: WishlistButtonProps) => {
   );
   const wishlist = (data as Wishlist | undefined) ?? [];
   const isWishlisted = new Set(wishlist).has(id);
-
-  const addMutation = useMutation(
-    trpc.wishlistItems.addToWishlist.mutationOptions({
-      onMutate: async (variables: AddToWishlist) => {
-        await queryClient.cancelQueries(
-          trpc.wishlistItems.getWishlist.queryOptions(),
-        );
-
-        const previous = queryClient.getQueryData(
-          trpc.wishlistItems.getWishlist.queryKey(),
-        );
-
-        queryClient.setQueryData(
-          trpc.wishlistItems.getWishlist.queryKey(),
-          (old: typeof wishlist | undefined) => [
-            ...(old ?? []),
-            variables.productId,
-          ],
-        );
-
-        return { previous };
-      },
-
-      onError: (
-        _err: unknown,
-        _vars: AddToWishlist,
-        context: { previous?: Wishlist } | undefined,
-      ) => {
-        if (context?.previous) {
-          queryClient.setQueryData(
-            trpc.wishlistItems.getWishlist.queryKey(),
-            context.previous,
-          );
-        }
-      },
-
-      onSettled: () => {
-        queryClient.invalidateQueries(
-          trpc.wishlistItems.getWishlist.queryOptions(),
-        );
-      },
-    }),
-  );
-
-  const removeMutation = useMutation(
-    trpc.wishlistItems.removeFromWishList.mutationOptions({
-      onMutate: async (variables: RemoveWishlist) => {
-        await queryClient.cancelQueries(
-          trpc.wishlistItems.getWishlist.queryOptions(),
-        );
-
-        const previous = queryClient.getQueryData(
-          trpc.wishlistItems.getWishlist.queryKey(),
-        );
-
-        queryClient.setQueryData(
-          trpc.wishlistItems.getWishlist.queryKey(),
-          (old: typeof wishlist | undefined) =>
-            old?.filter((item) => item !== variables.productId),
-        );
-
-        return { previous };
-      },
-
-      onError: (_err: unknown, _vars: RemoveWishlist, context) => {
-        if (context?.previous) {
-          queryClient.setQueryData(
-            trpc.wishlistItems.getWishlist.queryKey(),
-            context.previous,
-          );
-        }
-      },
-
-      onSettled: () => {
-        queryClient.invalidateQueries(
-          trpc.wishlistItems.getWishlist.queryOptions(),
-        );
-      },
-    }),
-  );
+  const { addToWishlist, removeFromWishlist } = useWishlist();
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (isWishlisted) {
-      removeMutation.mutate({ productId: id });
+      addToWishlist.mutate({ productId: id });
       showCustomToast("Item removed from wishlist", image, () =>
         router.push("/cart"),
       );
     } else {
-      addMutation.mutate({ productId: id });
+      removeFromWishlist.mutate({ productId: id });
       showCustomToast("Item wishlited", image, () => router.push("/cart"));
     }
   };
