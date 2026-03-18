@@ -49,4 +49,4 @@ export type UserVerifyOtpInput = RouterInputs["users"]["verifyOtp"];
 export type SendOtpOutput = RouterOutput["users"]["sendOtp"];
 export type VerifyOtpOutput = RouterOutput["users"]["verifyOtp"];
 // order
-export type OrderItem = RouterOutput["order"]["getOrdderById"];
+export type OrderbyIdOutput = RouterOutput["order"]["getOrdderById"];
