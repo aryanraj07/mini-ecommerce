@@ -7,7 +7,7 @@ import { useTRPC } from "@/utils/trpc";
 import Image from "next/image";
 import OrderTimeline from "@/app/components/OrderDetails/OrderTimeline";
 
-import { OrderbyIdOutput } from "@/types/types";
+import { OrderbyIdOutput, OrderItem, OrderItemItems } from "@/types/types";
 interface OrderSinglePageProps {
   orderId: string;
 }
@@ -33,15 +33,17 @@ export default function OrderSinglePage({ orderId }: OrderSinglePageProps) {
       },
     ),
   );
-
+  const order = data as OrderbyIdOutput | undefined;
+  const { paymentStatus, id, createdAt, totalAmount, orderStatus, items } =
+    data as OrderbyIdOutput;
   if (isLoading)
     return (
       <div className="p-8 animate-pulse text-gray-500">
         Loading order details...
       </div>
     );
-  if (!data) return <p className="p-8">Order not found</p>;
-  if (data.paymentStatus === "PENDING") {
+  if (!order) return <p className="p-8">Order not found</p>;
+  if (order.paymentStatus === "PENDING") {
     return (
       <div className="p-8 text-center">
         <h2 className="text-xl font-semibold">Processing your payment...</h2>
@@ -57,20 +59,20 @@ export default function OrderSinglePage({ orderId }: OrderSinglePageProps) {
       {/* Header */}
       <div className="flex justify-between items-center border-b pb-6">
         <div>
-          <h1 className="text-2xl font-bold">Order #{data.id}</h1>
+          <h1 className="text-2xl font-bold">Order #{order.id}</h1>
           <p className="text-sm text-gray-500">
-            Placed on {new Date(data.createdAt).toLocaleDateString()}
+            Placed on {new Date(order.createdAt).toLocaleDateString()}
           </p>
         </div>
 
         <div className="text-right">
           <p className="text-gray-500 text-sm">Total Amount</p>
-          <p className="text-2xl font-bold">₹{data.totalAmount}</p>
+          <p className="text-2xl font-bold">₹{order.totalAmount}</p>
         </div>
       </div>
 
       {/* Order Status Timeline */}
-      <OrderTimeline status={data.orderStatus} />
+      <OrderTimeline status={order.orderStatus} />
 
       {/* Products Section */}
 
@@ -78,7 +80,7 @@ export default function OrderSinglePage({ orderId }: OrderSinglePageProps) {
         <h2 className="text-lg font-semibold mb-4">Items in this order</h2>
 
         <div className="space-y-6">
-          {data.items.map((item) => (
+          {order.items.map((item) => (
             <div
               key={item.id}
               className="flex gap-6 border-b pb-6 cursor-pointer"
@@ -113,13 +115,13 @@ export default function OrderSinglePage({ orderId }: OrderSinglePageProps) {
       <div className="grid md:grid-cols-2 gap-6">
         <div className="border rounded-xl p-6">
           <h3 className="font-semibold mb-3">Payment Information</h3>
-          <p>Status: {data.paymentStatus}</p>
-          <p>Payment ID: {data.paymentId}</p>
+          <p>Status: {order.paymentStatus}</p>
+          <p>Payment ID: {order.paymentId}</p>
         </div>
 
         <div className="border rounded-xl p-6">
           <h3 className="font-semibold mb-3">Order Status</h3>
-          <p>Current Status: {data.orderStatus}</p>
+          <p>Current Status: {order.orderStatus}</p>
         </div>
       </div>
     </div>

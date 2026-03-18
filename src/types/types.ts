@@ -36,9 +36,7 @@ export type RemoveWishlist =
 export type SummaryType = RouterOutput["cartItem"]["getCartSummary"];
 export type FilterDataOutput = RouterOutput["filters"]["getFilterData"];
 export type OrdersOutput = RouterOutput["order"]["getMyOrders"];
-export type OrderItem = NonNullable<
-  RouterOutput["order"]["getMyOrders"]
->[number];
+
 export type OrderItemItem = NonNullable<
   RouterOutput["order"]["getMyOrders"]
 >[number];
@@ -50,3 +48,10 @@ export type SendOtpOutput = RouterOutput["users"]["sendOtp"];
 export type VerifyOtpOutput = RouterOutput["users"]["verifyOtp"];
 // order
 export type OrderbyIdOutput = RouterOutput["order"]["getOrdderById"];
+
+export type OrderItem = NonNullable<
+  RouterOutput["order"]["getMyOrders"]
+>[number];
+export type OrderItemItems = NonNullable<
+  RouterOutput["order"]["getMyOrders"]
+>[number]["items"];
