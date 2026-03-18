@@ -1,11 +1,13 @@
 "use client";
 export const dynamic = "force-dynamic";
-import { useParams, useRouter } from "next/navigation";
+
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 import Image from "next/image";
 import OrderTimeline from "@/app/components/OrderDetails/OrderTimeline";
-import Link from "next/link";
+
+import { OrderbyIdOutput } from "@/types/types";
 interface OrderSinglePageProps {
   orderId: string;
 }
@@ -20,7 +22,10 @@ export default function OrderSinglePage({ orderId }: OrderSinglePageProps) {
       {
         enabled: !!orderId,
         refetchInterval: (query) =>
-          query.state.data?.paymentStatus === "PENDING" ? 2000 : false,
+          (query.state.data as OrderbyIdOutput | undefined)?.paymentStatus ===
+          "PENDING"
+            ? 2000
+            : false,
       },
     ),
   );
