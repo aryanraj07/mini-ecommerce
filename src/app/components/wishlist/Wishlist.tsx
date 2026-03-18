@@ -21,7 +21,7 @@ const Wishlist = () => {
       },
     ),
   );
-  const products = (productsData as ProductsOutput)?.products ?? [];
+  const products: ProductsOutput["products"] = productsData?.products ?? [];
   if (isLoading) {
     return (
       <div>

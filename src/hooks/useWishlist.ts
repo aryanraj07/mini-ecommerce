@@ -1,7 +1,7 @@
 // hooks/useWishlist.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTRPCClient, useTRPC } from "@/utils/trpc";
-import { AddToWishlist, RemoveWishlist, Wishlist } from "@/types/types";
+import { AddToWishlist, RemoveWishlist, WishlistItem } from "@/types/types";
 
 export const useWishlist = () => {
   const trpcClient = useTRPCClient();
@@ -15,7 +15,7 @@ export const useWishlist = () => {
     { message: string },
     unknown,
     AddToWishlist,
-    { previousWishlist?: Wishlist }
+    { previousWishlist?: WishlistItem }
   >({
     mutationFn: (variables) =>
       trpcClient.wishlistItems.addToWishlist.mutate(variables),
@@ -24,11 +24,11 @@ export const useWishlist = () => {
       await queryClient.cancelQueries({ queryKey: wishlistQueryKey });
 
       const previousWishlist =
-        queryClient.getQueryData<Wishlist>(wishlistQueryKey);
+        queryClient.getQueryData<WishlistItem>(wishlistQueryKey);
 
       queryClient.setQueryData(
         wishlistQueryKey,
-        (old: Wishlist | undefined) => {
+        (old: WishlistItem | undefined) => {
           const current = old ?? [];
 
           // avoid duplicates
@@ -57,7 +57,7 @@ export const useWishlist = () => {
     { message: string },
     unknown,
     RemoveWishlist,
-    { previousWishlist?: Wishlist }
+    { previousWishlist?: WishlistItem }
   >({
     mutationFn: (variables) =>
       trpcClient.wishlistItems.removeFromWishList.mutate(variables),
@@ -66,11 +66,11 @@ export const useWishlist = () => {
       await queryClient.cancelQueries({ queryKey: wishlistQueryKey });
 
       const previousWishlist =
-        queryClient.getQueryData<Wishlist>(wishlistQueryKey);
+        queryClient.getQueryData<WishlistItem>(wishlistQueryKey);
 
       queryClient.setQueryData(
         wishlistQueryKey,
-        (old: Wishlist | undefined) => {
+        (old: WishlistItem | undefined) => {
           if (!old) return old;
 
           return old.filter((item) => item !== variables.productId);
