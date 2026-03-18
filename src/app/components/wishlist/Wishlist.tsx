@@ -1,11 +1,8 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import ProductCard from "../common/ProductCard";
-import { Suspense, useEffect, useState } from "react";
 import { useTRPC } from "@/utils/trpc";
-
 import { useQuery } from "@tanstack/react-query";
-import { ProductsOutput, WishlistItem } from "@/types/types";
+import { ProductPreview, ProductsOutput, WishlistItem } from "@/types/types";
 
 const Wishlist = () => {
   const trpc = useTRPC();
@@ -38,7 +35,7 @@ const Wishlist = () => {
         My Wishlists <span>{wishlistIds?.length} items</span>
       </h3>
       <div className="grid grid-cols-1 sm:grid-cold-2  md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center]">
-        {products?.map((product) => (
+        {products?.map((product: ProductPreview) => (
           <ProductCard
             key={product.id}
             product={product}
