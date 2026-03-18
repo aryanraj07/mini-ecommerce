@@ -15,7 +15,7 @@ import { setUser } from "@/features/user/userSlice";
 import { setSearch } from "@/features/filters/filterSlice";
 import { useTRPC } from "@/utils/trpc";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CartItem, CartOutput } from "@/types/types";
+import { CartItem, CartOutput, WishlistItem } from "@/types/types";
 const Header = () => {
   const router = useRouter();
   const [showSearch, setShowSearch] = useState(false);
@@ -23,11 +23,12 @@ const Header = () => {
   const pathname = usePathname();
   const isAuthenticated = useAppSelector((state) => state.user.user !== null);
   const trpc = useTRPC();
-  const { data: wishlistIds = [], isLoading } = useQuery(
+  const { data: wishlistData = [], isLoading } = useQuery(
     trpc.wishlistItems.getWishlist.queryOptions(undefined, {
       staleTime: 1000 * 60 * 5,
     }),
   );
+  const wishlistIds: WishlistItem = wishlistData ?? [];
   const dispatch = useAppDispatch();
   useEffect(() => {
     setShowSearch(pathname === "/products");
